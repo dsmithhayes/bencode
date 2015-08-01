@@ -3,6 +3,7 @@
 use Bencode\Core\Element;
 use Bencode\Core\Buffer;
 use Bencode\Core\Reader;
+use Bencode\Core\Stack;
 use Bencode\Exception\ElementListException;
 
 /**
@@ -109,26 +110,60 @@ class ElementList extends Reader implements Element, Buffer
 	 * ElementListException.
 	 */
 	public function read($in)
-	{	
+	{
+		$int_flag = false;
+		$byte_flag = false;		// read a byte
+		$byte_switch = false;	// false = read size; true = read chars
+		$byte_size = 0;			// the size of the byte
+		
 		// throws ElementListException here
 		if($this->valid($in))
 			$in = $this->dropEncoding($in);
 		
-		$buffer = str_split($in);
-		$cursor = 0;
+		$buffer = new str_split($in);
+		$int_stack = new Stack();
+		$byte_stack = new Stack();
 		
 		// step through the stream
-		foreach($buffer as $c){
-			// collect encoding tokens
+		foreach($buffer as $buf) {
 			
-				// if integer
+			// decode integers from the list 
+			if($int_flag) {
+				if($buf !== parent::END)
+					$int_stack->push($buf);
+				else {
+					foreach($int_stack->dump() as $int)
+						$in .= $int;
+					
+					$this->_buf[] = new Integer($in);
+					$int_flag = false;
+				}
 				
-					// collect integers until 'e'
+				continue;
+			}
+			
+			// decode the byte
+			elseif($byte_flag) {
 				
-				// if byte
+				// read the byte
+				if($byte_switch) {
+					
+				}
+				else {
+					// read the size
+					if($buf !== Byte::SEPERATOR)
+						$byte_stack->push($buf);
+					
+					
+				}
 				
-					// collect integers until ':', call limit
-					// collect bytes until limit
+				continue;
+			}
+			
+			if($buf === Integer::START)
+				$byte_flag = true;
+			elseif(is_int($buf))
+				$int_flag = true;
 		}
 	}
 }

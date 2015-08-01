@@ -20,13 +20,23 @@ class Stack
 	
 	public function pop()
 	{
-		return $this->_memory[$this->_sp--];
+		$temp = $this->_memory[$this->_sp];
+		unset($this->_memory[$this->_sp]);
+		
+		$this->_sp = $this->_forceValidStackPoint(($this->_sp--));
+		
+		return $temp;
 	}
 	
 	public function push($data)
 	{
-		$this->_memory[] = $data;
-		$this->_sp++;
+		if(is_array($data))
+			foreach($data as $d)
+				$this->_memory[] = $d;
+		else
+			$this->_memory[] = $data;
+		
+		$this->_sp = count($this->_memory) - 1;
 	}
 	
 	public function dump()
@@ -41,5 +51,28 @@ class Stack
 		
 		$this->_memory = $data;
 		$this->_sp = 0;
+	}
+	
+	public function getStackPointer()
+	{
+		return $this->_sp;
+	}
+	
+	public function setStackPointer($n)
+	{
+		$this->_sp = $this->_forceValidStackPoint($n);
+	}
+	
+	protected function _forceValidStackPointer($n)
+	{
+		if($n < 0)
+			$n = 0;
+	
+		$memorySize = count($this->_memory) - 1;
+		
+		if($n > $memorySize)
+			$n = $memorySize;
+		
+		return $n;
 	}
 }

@@ -9,7 +9,7 @@
          stopOnFailure="false"
          syntaxCheck="false">
     <testsuites>
-        <testsuite name="Bencode Tests">
+        <testsuite name="Bencode Test Suites">
             <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>

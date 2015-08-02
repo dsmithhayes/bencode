@@ -1,10 +1,11 @@
-<?php namespace Bencode;
+<?php namespace DSH\Bencode;
 
 use Bencode\Core\Element;
 use Bencode\Core\Buffer;
 use Bencode\Core\Reader;
-use Bencode\Core\Stack;
-use Bencode\Exception\ElementListException;
+use Bencode\Exceptions\ElementListException;
+
+use DSH\Stack\Stack;
 
 /**
  * Because of PHP's keyword 'list' this object can't actually be called
@@ -27,7 +28,7 @@ class ElementList extends Reader implements Element, Buffer
 	/**
 	 * Gnarly REGEX bro, it tears apart an encoded list.
 	 */
-	const PATTERN = '(i-?\d+e)|(\d+\:\D+)';
+	const PATTERN = '';
 	
 	/**
 	 * Six ways to instantiate an ElementList object. 

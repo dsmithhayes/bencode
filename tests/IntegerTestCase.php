@@ -1,8 +1,8 @@
 <?php
 
-use Bencode\Integer;
+use DSH\Bencode\Integer;
 
-class IntegerTestCase extends PHP_Framework_TestCase
+class IntegerTestCase extends PHPUnit_Framework_TestCase
 {
 	
 }

@@ -15,26 +15,35 @@ class ElementList extends Reader implements Element, Buffer
 	const START = 'l';
 	const END = 'e';
 	
-	private $_buf;
-	private $_stack;
+	/**
+	 * @var mixed[] $_buf the internal buffer of the list.
+	 */
+	private $_buf = array();
 	
 	/**
 	 * Construct from nothing or an array of elements.
 	 * 
-	 * @param mixed[]|null $in If set, create a list of the elements 
+	 * @param mixed[]|null $in If set, create a list of the elements
 	 */
 	public function __construct($in = array())
 	{
 		if(empty($in))
 			$this->_buf = $in;
-		else
+		elseif(is_array($in))
 			foreach($in as $i)
-				if($this->_checkInteger($i))
+				if($this->checkInteger($i))
 					$this->_buf[] = new Integer($i);
-				elseif($this->_checkByte($i))
+				elseif($this->checkByte($i))
 					$this->_buf[] = new Byte($i);
+		else
+			$this->read($in);
 	}
 	
+	/**
+	 * Encodes the internal buffer as a raw stream.
+	 * 
+	 * @return string the raw encoded stream of a list
+	 */
 	public function encode()
 	{
 		$buffer = self::START;
@@ -47,14 +56,27 @@ class ElementList extends Reader implements Element, Buffer
 		return $buffer;
 	}
 	
+	/**
+	 * Decodes an encoded steam of the element list.
+	 * 
+	 * @param string $in the raw stream of an element list
+	 * @throws \DSH\Bencode\Exceptions\ElementListException
+	 */
 	public function decode($in)
 	{
-		if($this->valid($in)) {
+		if($this->valid($in)) {		// ElementListException thrown here
 			$in = $this->dropEncoding($in);
 			$this->read($in);
 		}
 	}
 	
+	/**
+	 * Checks the validity of the stream.
+	 * 
+	 * @param string $in the encoded stream of an element list.
+	 * @throws \DSH\Bencode\Exceptions\ElementListException
+	 * @return bool returns true if the stream is encoded properly.
+	 */
 	public function valid($in)
 	{
 		if($this->readFirst($in) != self::START)
@@ -66,6 +88,12 @@ class ElementList extends Reader implements Element, Buffer
 		return true;
 	}
 	
+	/**
+	 * Evaluates each part of the list, places the object of the element
+	 * into the internal value.
+	 * 
+	 * @param string $in the encoded stream, sans the first and last character
+	 */
 	public function read($in)
 	{
 		$int_flag = false;
@@ -75,6 +103,8 @@ class ElementList extends Reader implements Element, Buffer
 		$temp = str_split($in);
 		
 		for($i = 0; $i < count($temp); $i++) {
+			
+			// read an integer from the list
 			if($int_flag) {
 				$buffer = $this->readInt($in);
 				$this->_buf[] = $buffer;
@@ -85,6 +115,7 @@ class ElementList extends Reader implements Element, Buffer
 				continue;
 			}
 			
+			// read a byte from the list
 			if($byte_flag) {
 				$buffer = $this->readByte($in);
 				$this->_buf[] = $buffer;
@@ -95,6 +126,7 @@ class ElementList extends Reader implements Element, Buffer
 				continue;
 			}
 			
+			// check if its a byte or integer in the list.
 			if($temp[$i] == Integer::START) {
 				$int_flag = true;
 				$i--;
@@ -136,7 +168,7 @@ class ElementList extends Reader implements Element, Buffer
 	 * @param int|\DSH\Bencode\Integer $in the value in question
 	 * @return bool Returns true if valid integer.
 	 */
-	private function _checkInteger($in)
+	public function checkInteger($in)
 	{
 		if($in instanceof Integer)
 			return true;
@@ -157,7 +189,7 @@ class ElementList extends Reader implements Element, Buffer
 	 * @param string|\DSH\Bencode\Byte $in the byte in question
 	 * @return \DSH\Bencode\Byte Returns an instance of a Byte object
 	 */
-	private function _checkByte($in)
+	public function checkByte($in)
 	{	
 		if($in instanceof Byte)
 			return true;

@@ -1,6 +1,7 @@
 <?php
 
 use DSH\Bencode\Core\Element;
+use DSH\Bencode\Core\Reader;
 use DSH\Bencode\ElementList;
 use DSH\Bencode\Byte;
 use DSH\Bencode\Integer;
@@ -14,16 +15,16 @@ class ElementListTestCase extends PHPUnit_Framework_TestCase
 	{
 		$empty_element_list = new ElementList();
 		$array_element_list = new ElementList($this->_valid_raw_array);
+		$raw_element_list = new ElementList($this->_valid_raw_stream);
 	}
 	
 	public function testReadInt()
 	{
 		$element_list = new ElementList($this->_valid_raw_array);
-		
-		$list = $element_list->dropEncoding($this->_valid_raw_stream);
+		$list = Reader::dropEncoding($this->_valid_raw_stream);
 		
 		$int = $element_list->readInt($list);
-		$this->assertEquals(23, $int->write());
+		$this->assertEquals($this->_valid_raw_array[0], $int->write());
 	}
 	
 	public function testReadByteSize()
@@ -68,6 +69,7 @@ class ElementListTestCase extends PHPUnit_Framework_TestCase
 		$encoded_byte = $byte->encode();
 		$encoded_int = $int->encode();
 		
+		// 'l4:testi15e5:othere'
 		$encoded = ElementList::START 
 				. $byte->encode()
 				. $int->encode()

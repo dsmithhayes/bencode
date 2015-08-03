@@ -45,7 +45,18 @@ class Dictionary extends Reader implements Element, Buffer
 		$buffer = self::START;
 		
 		foreach($this->_buf as $key => $value) {
+			if(Integer::check($key))
+				$key = new Integer($key);
+			elseif(Byte::check($key))
+				$key = new Byte($key);
 			
+			if(Integer::check($value))
+				$value = new Integer($value);
+			elseif(Byte::check($value))
+				$value = new Byte($value);
+			
+			$buffer .= $key->encode();
+			$buffer .= $value->encode();
 		}
 		
 		$buffer .= self::END;
@@ -55,6 +66,8 @@ class Dictionary extends Reader implements Element, Buffer
 	
 	public function decode($in)
 	{
+		if($this->valid($in))
+			$in = $this->dropEncoding($in);
 		
 	}
 	
@@ -76,7 +89,7 @@ class Dictionary extends Reader implements Element, Buffer
 	
 	public function write()
 	{
-		
+		return $this->_buf;
 	}
 	
 	public function read($in)

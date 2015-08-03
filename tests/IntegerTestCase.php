@@ -17,6 +17,10 @@ class IntegerTestCase extends PHPUnit_Framework_TestCase
 		$empty_int = new Integer();
 		$valid_int = new Integer($this->_values[1]);
 		$encoded_int = new Integer($this->_encoded);
+		
+		$this->assertEquals('i0e', $empty_int->encode());
+		$this->assertEquals('i1e', $valid_int->encode());
+		$this->assertEquals($this->_encoded, $encoded_int->encode());
 	}
 	
 	public function testIntegerNegative()

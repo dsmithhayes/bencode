@@ -21,6 +21,14 @@ class DictionaryTestCase extends PHPUnit_Framework_TestCase
 	{
 		$dictionary = new Dictionary($this->_dictionary);
 		
-		// $this->assertEquals($this->_encoded, $dictionary->encode());
+		$this->assertEquals($this->_encoded, $dictionary->encode());
+	}
+	
+	public function testDictionaryWriting()
+	{
+		$dictionary = new Dictionary($this->_dictionary);
+		$new_array = $dictionary->write();
+		
+		$this->assertEquals($new_array[5], $this->_dictionary[5]);
 	}
 }

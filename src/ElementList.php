@@ -50,7 +50,8 @@ class ElementList extends Reader implements Element, Buffer
 	public function decode($in)
 	{
 		if($this->valid($in)) {
-			
+			$in = $this->dropEncoding($in);
+			$this->read($in);
 		}
 	}
 	
@@ -70,9 +71,6 @@ class ElementList extends Reader implements Element, Buffer
 		$int_flag = false;
 		$byte_flag = false;
 		$buffer = null;
-		
-		if($this->valid($in))
-			$in = $this->dropEncoding($in);
 		
 		$temp = str_split($in);
 		
@@ -108,7 +106,6 @@ class ElementList extends Reader implements Element, Buffer
 				continue;
 			}
 		}
-		
 	}
 	
 	/**

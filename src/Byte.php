@@ -106,7 +106,8 @@ class Byte implements Element, Buffer
 		if((int) $in[0] !== strlen($in[1]))
 			throw new ByteException('internal buffer: size mismatch: '
 					. $in[1]
-					. ' : ' . $in[0]);
+					. ' : ' 
+					. $in[0]);
 		
 		return true; 
 	}

@@ -1,9 +1,9 @@
 <?php namespace DSH\Bencode;
 
-use Bencode\Core\Element;
-use Bencode\Core\Buffer;
-use Bencode\Core\Reader;
-use Bencode\Exceptions\ElementListException;
+use DSH\Bencode\Core\Element;
+use DSH\Bencode\Core\Buffer;
+use DSH\Bencode\Core\Reader;
+use DHS\Bencode\Exceptions\ElementListException;
 
 use DSH\Stack\Stack;
 
@@ -47,7 +47,13 @@ class ElementList extends Reader implements Element, Buffer
 	
 	public function valid($in)
 	{
+		if($this->readFirst($in) != self::START)
+			throw new ElementListException('improper encoding: ' . $in);
 		
+		if($this->readLast($in) != self::END)
+			throw new ElementListException('improper encoding: '. $in);
+		
+		return true;
 	}
 	
 	public function read($in)
@@ -57,7 +63,7 @@ class ElementList extends Reader implements Element, Buffer
 	
 	public function write()
 	{
-		
+		return $this->_buf;
 	}
 	
 	/**

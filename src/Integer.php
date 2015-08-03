@@ -100,7 +100,7 @@ class Integer extends Reader implements Element, Buffer
 	 * Implemented from the Buffer interface this reads in raw data that
 	 * is to be encoded.
 	 * 
-	 * @param int $in The integer to read into the buffer.
+	 * @param int $in The integer to read into the buffer
 	 */
 	public function read($in)
 	{
@@ -108,5 +108,16 @@ class Integer extends Reader implements Element, Buffer
 			throw new IntegerException('reading from non integer');
 		
 		$this->_buf = $in;
+	}
+	
+	/**
+	 * Implemented from the Buffer interface, this returns the total length
+	 * of the raw stream of data.
+	 * 
+	 * @return int the length of the raw stream
+	 */
+	public function length()
+	{
+		return strlen($this->encode());
 	}
 }

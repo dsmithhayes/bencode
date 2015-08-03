@@ -128,5 +128,16 @@ class Byte implements Element, Buffer
 	{
 		$this->_buf['size'] = strlen($in);
 		$this->_buf['raw'] = $in;	
-	} 
+	}
+	
+	/**
+	 * Implemented from the Buffer interface, returns the length of the raw
+	 * data stream
+	 * 
+	 * @return int the length of the raw data stream
+	 */
+	public function length()
+	{
+		return strlen($this->encode());
+	}
 }

@@ -11,4 +11,9 @@ interface Buffer
 	 * Returns the raw data in the buffer
 	 */
 	public function write();
+	
+	/**
+	 * Returns the length of the raw data.
+	 */
+	public function length();
 }

@@ -28,7 +28,7 @@ class ElementList extends Reader implements Element, Buffer
 		if(empty($in))
 			$this->_buf = $in;
 		else
-			foreach($in as &$i)
+			foreach($in as $i)
 				if($this->_checkInteger($i))
 					$this->_buf[] = new Integer($i);
 				elseif($this->_checkByte($i))
@@ -65,14 +65,62 @@ class ElementList extends Reader implements Element, Buffer
 	
 	public function read($in)
 	{
-		while(isset($in)) {
+		$temp = str_split($in);
+		$int_flag = false;
+		$byte_flag = false;
+		$buffer = null;
+		
+		for($i = 0; $i < count($temp); $i++) {
+			if($int_flag) {
+				$buffer = $this->readInt($in);
+				$i += ($buffer->length() - 1);
+				
+				$this->_buf[] = $buffer;
+				$int_flag = false;
+				continue;
+			}	
 			
+			if($byte_flag) {
+				$buffer = $this->readByte($in);
+				$i += ($buffer->length() - 1);
+				
+				$this->_buf[] = $buffer;
+				$byte_flag = false;
+				continue;
+			}
+			
+			if($temp[$i] == Integer::START) {
+				$int_flag = true;
+				continue;
+			}
+			
+			if(is_int($temp[$i])) {
+				$byte_flag = true;
+				continue;
+			}
 		}
 	}
 	
+	/**
+	 * Implemented from the Buffer interface this returns the raw data buffer
+	 * of the element.
+	 * 
+	 * @return mixed[] internal list element buffer
+	 */
 	public function write()
 	{
 		return $this->_buf;
+	}
+	
+	/**
+	 * Implemented from the Buffer interface, returns the length of the raw
+	 * stream data.
+	 * 
+	 * @return int length of the raw stream
+	 */
+	public function length()
+	{
+		return strlen($this->encode());
 	}
 	
 	/**

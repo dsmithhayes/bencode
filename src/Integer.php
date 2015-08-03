@@ -58,7 +58,7 @@ class Integer extends Reader implements Element, Buffer
 	public function decode($in)
 	{
 		if($this->valid($in))
-			$in = $this->dropEncoding($in);
+			$in = (int) $this->dropEncoding($in);
 		
 		if(!is_int($in))
 			throw new IntegerException('decoding from non-integer');

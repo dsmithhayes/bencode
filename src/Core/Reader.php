@@ -29,6 +29,6 @@ abstract class Reader
 	public function dropEncoding($in)
 	{
 		$in = substr($in, 1);
-		return (int) substr($in, 0, (strlen($in) - 1));
+		return substr($in, 0, (strlen($in) - 1));
 	}
 }

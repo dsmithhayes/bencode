@@ -64,7 +64,9 @@ class Byte implements Element, Buffer
 	public function encode()
 	{
 		if($this->_buf['size'] !== strlen($this->_buf['raw']))
-			throw new ByteException('internal buffer: size mismatch');
+			throw new ByteException('internal buffer: size mismatch: ' 
+					. $this->_buf['raw']
+					. ' : ' . $this->_buf['size']);
 		
 		return $this->_buf['size'] . self::SEPERATOR . $this->_buf['raw'];
 	}
@@ -102,7 +104,9 @@ class Byte implements Element, Buffer
 		$in = explode(':', $in);
 		
 		if((int) $in[0] !== strlen($in[1]))
-			throw new ByteException('internal buffer: size mismatch');
+			throw new ByteException('internal buffer: size mismatch: '
+					. $in[1]
+					. ' : ' . $in[0]);
 		
 		return true; 
 	}
@@ -127,7 +131,7 @@ class Byte implements Element, Buffer
 	public function read($in) 
 	{
 		$this->_buf['size'] = strlen($in);
-		$this->_buf['raw'] = $in;	
+		$this->_buf['raw'] = $in;
 	}
 	
 	/**

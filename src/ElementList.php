@@ -49,7 +49,9 @@ class ElementList extends Reader implements Element, Buffer
 	
 	public function decode($in)
 	{
-		
+		if($this->valid($in)) {
+			
+		}
 	}
 	
 	public function valid($in)
@@ -65,40 +67,48 @@ class ElementList extends Reader implements Element, Buffer
 	
 	public function read($in)
 	{
-		$temp = str_split($in);
 		$int_flag = false;
 		$byte_flag = false;
 		$buffer = null;
 		
+		if($this->valid($in))
+			$in = $this->dropEncoding($in);
+		
+		$temp = str_split($in);
+		
 		for($i = 0; $i < count($temp); $i++) {
 			if($int_flag) {
 				$buffer = $this->readInt($in);
+				$this->_buf[] = $buffer;
+				
 				$i += ($buffer->length() - 1);
 				
-				$this->_buf[] = $buffer;
 				$int_flag = false;
 				continue;
-			}	
+			}
 			
 			if($byte_flag) {
 				$buffer = $this->readByte($in);
+				$this->_buf[] = $buffer;
+				
 				$i += ($buffer->length() - 1);
 				
-				$this->_buf[] = $buffer;
 				$byte_flag = false;
 				continue;
 			}
 			
 			if($temp[$i] == Integer::START) {
 				$int_flag = true;
+				$i--;
 				continue;
 			}
-			
-			if(is_int($temp[$i])) {
+			elseif(is_numeric($temp[$i])) {
 				$byte_flag = true;
+				$i--;
 				continue;
 			}
 		}
+		
 	}
 	
 	/**
@@ -174,7 +184,7 @@ class ElementList extends Reader implements Element, Buffer
 	{
 		$flag = false;
 		$stack = new Stack();
-		$int = 0;
+		$int = '';
 		
 		$cursor = 0;
 		$start = 0;
@@ -191,8 +201,9 @@ class ElementList extends Reader implements Element, Buffer
 					break;
 				}
 				
-				$stack->push((int) $c);
+				$stack->push($c);
 				$cursor++;
+				continue;
 			}
 			
 			if($c == Integer::START) {
@@ -222,11 +233,10 @@ class ElementList extends Reader implements Element, Buffer
 	 */
 	public function readByte(&$in)
 	{
-		$size = $this->readByteSize($in);
 		$raw = $this->readByteRaw($in);
 		
 		$buffer = array(
-			'size' => $size,
+			'size' => strlen($raw),
 			'raw' => $raw
 		);
 		
@@ -245,7 +255,7 @@ class ElementList extends Reader implements Element, Buffer
 		$flag = false;
 		$cursor = 0;
 		$stack = new Stack();
-		$buffer = 0;
+		$buffer = '';
 		
 		$in = str_split($in);
 		
@@ -255,11 +265,11 @@ class ElementList extends Reader implements Element, Buffer
 				break;
 			}
 			
-			$stack->push((int) $c);
+			$stack->push($c);
 			$cursor++;
 		}
 		
-		for($i = 0; $i <= $cursor; $i++)
+		for($i = 0; $i < $cursor; $i++)
 			unset($in[$i]);
 		
 		$in = implode("", array_values($in));
@@ -282,7 +292,7 @@ class ElementList extends Reader implements Element, Buffer
 		$stack = new Stack();
 		$buffer = '';
 		
-		$size = strlen($in);
+		$size = $this->readByteSize($in);
 		
 		$in = str_split($in);
 		

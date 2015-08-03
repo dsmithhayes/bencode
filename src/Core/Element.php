@@ -1,4 +1,4 @@
-<?php namespace Bencode\Core;
+<?php namespace DSH\Bencode\Core;
 
 interface Element
 {

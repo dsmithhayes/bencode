@@ -1,79 +1,116 @@
-<?php namespace Bencode;
+<?php namespace DSH\Bencode;
 
-use Bencode\Core\Element;
-use Bencode\Core\Buffer;
-use Bencode\Core\Reader;
-use Bencode\Exception\ByteException;
+use DSH\Bencode\Core\Element;
+use DSH\Bencode\Core\Buffer;
+use DSH\Bencode\Core\Reader;
+use DSH\Bencode\Exceptions\ByteException;
 
 /**
  * Bytes are encoded with the size of the value and the value itself
- * seperated by a colon. So like this: 4:test
+ * seperated by a colon. So like this: 4:test. Byte elements don't extend
+ * the Reader class because they are encoded differently than the other
+ * elements.
+ * 
+ * @author Dave Smith-Hayes <dsmithhayes@gmail.com>
  */
-
 class Byte implements Element, Buffer
 {
-	/**
-	 * Always an associative array
-	 */
-	private $_buf = [
+	const PATTERN = '/\d+:\w+/';
+	
+	private $_buf = array(
 		'size' => 0,
-		'raw'  => '',
-	];
-
-	const SEPERATOR = ':';
-	const PATTERN = '/[0-9]\:[\D]/';
+		'raw'  => ''
+	);
 	
 	/**
-	 * Construction can be done in three ways. 
+	 * You can construct an empty byte, or give it a stream to encode. The
+	 * value can also be an encoded string.
 	 * 
-	 * 1. As an internal buffer
-	 * 2. as an encoded Byte
-	 * 3. default (empty)
+	 * @param string|null if set, create the byte from the string
+	 * @throws \DSH\Bencode\Exceptions\ByteException
 	 */
 	public function __construct($in = null)
 	{
 		if(isset($in))
-			if(is_array($in))
-				$this->_buf = $in;
+			if(is_string($in))
+				if(preg_match(self::PATTERN, $in))
+					$this->decode($in);
+				else
+					$this->read($in);
+			elseif(is_array($in)) {
+				if(array_key_exists('size', $in)
+						&& array_key_exists('raw', $in))
+				{
+					$this->_buf['size'] = $in['size'];
+					$this->_buf['raw'] = $in['raw'];
+				}
+				else
+					throw new ByteException('improper buffer array');
+			}
+			elseif($in instanceof self)
+				$this->_buf = $in->write();
 			else
-				$this->read($in);
+				throw new ByteException('invalid byte');
 	}
 	
 	/**
 	 * Implemented from the Core\Element interface this returns a stream
 	 * of an encoded byte. Something like '4:test'
+	 * 
+	 * @throws \DSH\Bencode\Exceptions\ByteException
+	 * @return string Encoded byte stream
 	 */
 	public function encode()
 	{
 		if($this->_buf['size'] !== strlen($this->_buf['raw']))
-			throw new ByteException('Internal Buffer: size mismatch.');
+			throw new ByteException('internal buffer: size mismatch');
 		
 		return $this->_buf['size'] . self::SEPERATOR . $this->_buf['raw'];
 	}
 	
 	/**
 	 * Implemented from the Core\Element interfae this takes in a formatted
-	 * stream of a byte and places it in the internal buffer. 
+	 * stream of a byte and places it in the internal buffer.
+	 * 
+	 * @param string $in An encoded byte (4:test)
+	 * @throws \DSH\Bencode\Exceptions\ByteException
+	 * @return void
+	 * 
 	 */
 	public function decode($in)
 	{
 		// throws ByteException here.
-		if($this->valid($in))
-			$this->read(explode(":", $in)[1]);
+		if($this->valid($in)) {
+			$in = explode(":", $in);
+			$this->read($in[1]);
+		}
 	}
 	
 	/**
-	 * Throws an IntegerException if the encoding isn't proper.
+	 * Checks if the stream is valid.
+	 * 
+	 * @param string $in An encoded byte (4:test)
+	 * @throws \DSH\Bencode\Exceptions\ByteException
+	 * @return bool Returns true if the byte is encoded properly.
 	 */
 	public function valid($in)
-	{
+	{		
 		if(!preg_match(self::PATTERN, $in))
-			throw new ByteException('Improper byte encoding: ' $in);
+			throw new ByteException('improper byte encoding: ' . $in);
+		
+		$in = explode(':', $in);
+		
+		if((int) $in[0] !== strlen($in[1]))
+			throw new ByteException('internal buffer: size mismatch');
+		
+		return true; 
 	}
 	
 	/**
 	 * Implemented from the Core\Buffer interface, it returns the internal
 	 * buffer of the object.
+	 * 
+	 * @return mixed[] The internal buffer
 	 */
 	public function write() 
 	{
@@ -81,8 +118,10 @@ class Byte implements Element, Buffer
 	}
 	
 	/**
-	 * Implemented from the Core\Reader interface, it reads a raw strea and
-	 * places it in the interal buffer.
+	 * Implemented from the Core\Buffer interface, it reads a raw stream
+	 * and converts it into the internal buffer array.
+	 * 
+	 * @param string $in The raw stream
 	 */
 	public function read($in) 
 	{

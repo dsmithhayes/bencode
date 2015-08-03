@@ -8,163 +8,90 @@ use Bencode\Exceptions\ElementListException;
 use DSH\Stack\Stack;
 
 /**
- * Because of PHP's keyword 'list' this object can't actually be called
- * 'List' so instead it gets a bit longer of a name.
- * 
- * The ElementList is a raw list of ints and bytes starting with an 'l'
- * and ending with an 'e'.
+ * Represents a list element in bencode.
  */
-
 class ElementList extends Reader implements Element, Buffer
 {
-	/**
-	 * Always an indexed array of Bytes and Integers
-	 */
-	private $_buf = [];
-	
 	const START = 'l';
-	const END = parent::END;
+	const END = 'e';
+	
+	private $_buf;
+	private $_stack;
 	
 	/**
-	 * Gnarly REGEX bro, it tears apart an encoded list.
-	 */
-	const PATTERN = '';
-	
-	/**
-	 * Six ways to instantiate an ElementList object. 
+	 * Construct from nothing or an array of elements.
 	 * 
-	 * 1. null - empty list
-	 * 2. Integer - with an Integer object
-	 * 3. Byte - with a Byte object
-	 * 4. Array - as an array of Byte and Integer objects
-	 * 4. Array - as an array of raw data to be encoded.
-	 * 5. Encoded - Any encoded ElementList representation.
+	 * @param mixed[]|null $in If set, create a list of the elements 
 	 */
-	public function __construct($in = null)
+	public function __construct($in = array())
 	{
-		if(isset($in))
-			if($in instanceof Integer || $in instanceof Byte)
-				$this->_buf[] = $in;
-			elseif(is_array($in))
-				foreach($in as $element)
-					if($element instanceof Integer || $element instanceof Byte)
-						$this->_buf[] = $element;
-					elseif(is_int($element))
-						$this->_buf[] = new Integer($element);
-					else
-						$this->_buf[] = new Byte($element);
-			else
-				$this->read($in);
+		if(empty($in))
+			$this->_buf = $in;
+		else {
+			foreach($in as $i) {
+				if($this->_checkInteger($i))
+				
+			}
+		}
 	}
 	
-	/**
-	 * Implemented from the Element interface, returns an encoded
-	 * ElementList 
-	 */
 	public function encode()
 	{
-		$temp = self::START;
 		
-		foreach($this->_buf as $element)
-			$temp .= $element->encode();
-		
-		return $temp .= self::END
 	}
 	
-	/**
-	 * Implemented from the Element interface, takes in an encoded
-	 * ElementList and places it into the buffer.
-	 */
 	public function decode($in)
 	{
-		if($this->valid($in))
-			$in = $this->dropEncoding($in);
 		
-		$this->read($in);
 	}
 	
-	/**
-	 * Throws an ElementListException if the encoding is not valid
-	 */
 	public function valid($in)
 	{
-		if($this->readFirst($in) !== self::START)
-			throw new ElementListException('Improperly encoded: ' . self::START);
 		
-		if($this->readLast($in) !== self::END)
-			throw new ElementListException('Improperly encoded: '. self::END);
-		
-		return true;
 	}
 	
-	/**
-	 * Returns the internal buffer
-	 */
-	public function write()
-	{
-		return $this->_buf;
-	}
-	
-	/**
-	 * Implemented from the Buffer interface, sets the internal 
-	 * buffered list from an encoded string. This will throw the
-	 * ElementListException.
-	 */
 	public function read($in)
 	{
-		$int_flag = false;
-		$byte_flag = false;		// read a byte
-		$byte_switch = false;	// false = read size; true = read chars
-		$byte_size = 0;			// the size of the byte
 		
-		// throws ElementListException here
-		if($this->valid($in))
-			$in = $this->dropEncoding($in);
+	}
+	
+	public function write()
+	{
 		
-		$buffer = new str_split($in);
-		$int_stack = new Stack();
-		$byte_stack = new Stack();
+	}
+	
+	/**
+	 * Checks if the value is either a raw integer or an Integer object.
+	 * 
+	 * @param int|\DSH\Bencode\Integer $in the value in question
+	 * @return bool Returns true if valid integer.
+	 */
+	private function _checkInteger($in)
+	{
+		if(is_int($in))
+			return true;
 		
-		// step through the stream
-		foreach($buffer as $buf) {
-			
-			// decode integers from the list 
-			if($int_flag) {
-				if($buf !== parent::END)
-					$int_stack->push($buf);
-				else {
-					foreach($int_stack->dump() as $int)
-						$in .= $int;
-					
-					$this->_buf[] = new Integer($in);
-					$int_flag = false;
-				}
-				
-				continue;
-			}
-			
-			// decode the byte
-			elseif($byte_flag) {
-				
-				// read the byte
-				if($byte_switch) {
-					
-				}
-				else {
-					// read the size
-					if($buf !== Byte::SEPERATOR)
-						$byte_stack->push($buf);
-					
-					
-				}
-				
-				continue;
-			}
-			
-			if($buf === Integer::START)
-				$byte_flag = true;
-			elseif(is_int($buf))
-				$int_flag = true;
-		}
+		if($in instanceof Integer)
+			return true;
+		
+		return false;
+	}
+	
+	/**
+	 * Checks if the value is a raw byte stream, an encoded byte stream or a
+	 * Byte element object.
+	 * 
+	 * @param string|\DSH\Bencode\Byte $in the byte in question
+	 * @return \DSH\Bencode\Byte Returns an instance of a Byte object
+	 */
+	private function _checkByte($in)
+	{
+		if(Byte::valid($in))
+			return true;
+		
+		if($in instanceof Byte)
+			return true;
+		
+		return false;
 	}
 }

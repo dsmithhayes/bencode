@@ -1,4 +1,4 @@
-<?php namespace Bencode\Core;
+<?php namespace DSH\Bencode\Core;
 
 /**
  * There are three generic and one special case when it comes to encoding
@@ -6,13 +6,7 @@
  * three generic types (integers, lists, dictionaries). 
  */
 abstract class Reader
-{
-	/**
-	 * Every part of the encoding save for the Byte is suffixed with
-	 * and 'e'. 
-	 */
-	const END = 'e';
-	
+{	
 	/**
 	 * Returns the first character of the encoding
 	 */
@@ -35,6 +29,6 @@ abstract class Reader
 	public function dropEncoding($in)
 	{
 		$in = substr($in, 1);
-		return substr($in, 0, (strlen($in) - 1));
+		return (int) substr($in, 0, (strlen($in) - 1));
 	}
 }

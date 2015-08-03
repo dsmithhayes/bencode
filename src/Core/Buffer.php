@@ -1,11 +1,11 @@
-<?php namespace Bencode\Core;
+<?php namespace DSH\Bencode\Core;
 
 interface Buffer
 {
 	/**
 	 * Reads in raw data representing the element.
 	 */
-	public function read($input);
+	public function read($in);
 	
 	/**
 	 * Returns the raw data in the buffer

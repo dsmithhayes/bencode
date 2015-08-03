@@ -3,8 +3,12 @@
 use DSH\Bencode\Core\Element;
 use DSH\Bencode\Core\Buffer;
 use DSH\Bencode\Core\Reader;
-use DSH\Bencode\Exceptions\DictionaryException;
+
 use DSH\Bencode\ElementList;
+use DSH\Bencode\Integer;
+use DSH\Bencode\Byte;
+
+use DSH\Bencode\Exceptions\DictionaryException;
 
 /**
  * The dictionary acts as a key-value store of elements.
@@ -16,24 +20,31 @@ class Dictionary extends Reader implements Element, Buffer
 	
 	private $_buf = array();
 	
+	/**
+	 * Construction can only occur from nothing or an existing array that
+	 * will act as the key-value store for the Dictionary.
+	 * 
+	 * @param mixed[] $in Associative array
+	 */
 	public function __construct($in = array())
 	{
-		if(empty($in))
+		if(empty($in) || is_array($in))
 			$this->_buf = $in;
-		elseif(is_array($in))
-			foreach($in as $key => $value)
-				if($this->checkElement($key) && $this->checkElement($value))
-					$this->_buf[$key] = $value;
 		else
 			$this->read($in);
 	}
 	
+	/**
+	 * Returns a raw string of an encoded dictionary.
+	 * 
+	 * @return string Raw encoding of a dictionary element.
+	 */
 	public function encode()
 	{
 		$buffer = self::START;
 		
 		foreach($this->_buf as $key => $value) {
-				
+			
 		}
 		
 		$buffer .= self::END;
@@ -55,6 +66,11 @@ class Dictionary extends Reader implements Element, Buffer
 			throw new DictionaryException('improper encoding: ' . $in);
 		
 		return true;
+	}
+	
+	public function check($in)
+	{
+		
 	}
 	
 	public function write()
@@ -80,7 +96,7 @@ class Dictionary extends Reader implements Element, Buffer
 	 */
 	public function checkElement($in)
 	{
-		if(ElementList::checkInteger($in) || ElementList::checkByte($in))
+		if(Integer::check($in) || Byte::check($in))
 			return true;
 		
 		return false;

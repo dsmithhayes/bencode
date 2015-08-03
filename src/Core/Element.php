@@ -18,4 +18,9 @@ interface Element
 	 * Returns true if the encoding is valid.
 	 */
 	public function valid($in);
+	
+	/**
+	 * Returns true of the value can be an Integer object.
+	 */
+	public function check($in);
 }

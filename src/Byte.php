@@ -113,6 +113,28 @@ class Byte implements Element, Buffer
 	}
 	
 	/**
+	 * Implemented from the Element interface, checks if the given value can
+	 * be represented as a value Byte.
+	 * 
+	 * @param \DSH\Bencode\Byte|string $in and instance of a Byte object, an
+	 * 	encoded stream or a raw string.
+	 * @return bool Returns true if the value can be represented as a Byte
+	 */
+	public function check($in)
+	{
+		if($in instanceof Byte)
+			return true;
+		
+		if(preg_match(Byte::PATTERN, $in))
+			return true;
+		
+		if(is_string($in))
+			return true;
+		
+		return false;
+	}
+	
+	/**
 	 * Implemented from the Core\Buffer interface, it returns the internal
 	 * buffer of the object.
 	 * 

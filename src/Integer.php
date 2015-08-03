@@ -86,6 +86,28 @@ class Integer extends Reader implements Element, Buffer
 	}
 	
 	/**
+	 * Implemented from the Element interface, returns true if the given
+	 * value can be represented as an Integer.
+	 * 
+	 * @param \DSH\Bencode\Integer|int|string $in an Integer instance, an
+	 * 	actual integer or an encoded stream of an integer.
+	 * @return bool Returns true if the value can be an Integer. 
+	 */
+	public function check($in)
+	{
+		if($in instanceof Integer)
+			return true;
+		
+		if(preg_match(Integer::PATTERN, $in))
+			return true;
+		
+		if(is_int($in))
+			return true;
+		
+		return false;
+	}
+	
+	/**
 	 * Implemented from the Buffer interface, this returns the raw data
 	 * inside of the object's buffer.
 	 * 

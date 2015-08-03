@@ -14,6 +14,7 @@ class ElementList extends Reader implements Element, Buffer
 {
 	const START = 'l';
 	const END = 'e';
+	const PATTERN = '/l\w+e/';
 	
 	/**
 	 * @var mixed[] $_buf the internal buffer of the list.
@@ -31,9 +32,9 @@ class ElementList extends Reader implements Element, Buffer
 			$this->_buf = $in;
 		elseif(is_array($in))
 			foreach($in as $i)
-				if($this->checkInteger($i))
+				if(Integer::check($i))
 					$this->_buf[] = new Integer($i);
-				elseif($this->checkByte($i))
+				elseif(Byte::check($i))
 					$this->_buf[] = new Byte($i);
 		else
 			$this->read($in);
@@ -71,7 +72,7 @@ class ElementList extends Reader implements Element, Buffer
 	}
 	
 	/**
-	 * Checks the validity of the stream.
+	 * Checks the validity of the encoded stream.
 	 * 
 	 * @param string $in the encoded stream of an element list.
 	 * @throws \DSH\Bencode\Exceptions\ElementListException
@@ -86,6 +87,30 @@ class ElementList extends Reader implements Element, Buffer
 			throw new ElementListException('improper encoding: '. $in);
 		
 		return true;
+	}
+	
+	/**
+	 * Implemented from the Element interface, determines if the value given
+	 * can be a value element list.
+	 * 
+	 * @param \DSH\Bencode\ElementList|string $in the value to check
+	 * @return bool Returns true if 
+	 */
+	public function check($in)
+	{
+		if($in instanceof self)
+			return true;
+		
+		if(preg_match(self::PATTERN, $in))
+			return true;
+		
+		if(Integer::check($in))
+			return true;
+		
+		if(Byte::check($in))
+			return true;
+		
+		return false;
 	}
 	
 	/**
@@ -160,47 +185,6 @@ class ElementList extends Reader implements Element, Buffer
 	public function length()
 	{
 		return strlen($this->encode());
-	}
-	
-	/**
-	 * Checks if the value is either a raw integer or an Integer object.
-	 * 
-	 * @param int|\DSH\Bencode\Integer $in the value in question
-	 * @return bool Returns true if valid integer.
-	 */
-	public function checkInteger($in)
-	{
-		if($in instanceof Integer)
-			return true;
-		
-		if(preg_match(Integer::PATTERN, $in))
-			return true;
-		
-		if(is_int($in))
-			return true;
-		
-		return false;
-	}
-	
-	/**
-	 * Checks if the value is a raw byte stream, an encoded byte stream or a
-	 * Byte element object.
-	 * 
-	 * @param string|\DSH\Bencode\Byte $in the byte in question
-	 * @return \DSH\Bencode\Byte Returns an instance of a Byte object
-	 */
-	public function checkByte($in)
-	{	
-		if($in instanceof Byte)
-			return true;
-		
-		if(preg_match(Byte::PATTERN, $in))
-			return true;
-		
-		if(is_string($in))
-			return true;
-		
-		return false;
 	}
 	
 	/**

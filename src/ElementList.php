@@ -31,7 +31,7 @@ class ElementList extends Reader implements Element, Buffer
 			foreach($in as &$i)
 				if($this->_checkInteger($i))
 					$this->_buf[] = new Integer($i);
-				elseif($this->_chckByte($i))
+				elseif($this->_checkByte($i))
 					$this->_buf[] = new Byte($i);
 	}
 	
@@ -74,10 +74,13 @@ class ElementList extends Reader implements Element, Buffer
 	 */
 	private function _checkInteger($in)
 	{
-		if(is_int($in))
+		if($in instanceof Integer)
 			return true;
 		
-		if($in instanceof Integer)
+		if(preg_match(Integer::PATTERN, $in))
+			return true;
+		
+		if(is_int($in))
 			return true;
 		
 		return false;
@@ -91,11 +94,14 @@ class ElementList extends Reader implements Element, Buffer
 	 * @return \DSH\Bencode\Byte Returns an instance of a Byte object
 	 */
 	private function _checkByte($in)
-	{
-		if(Byte::valid($in))
+	{	
+		if($in instanceof Byte)
 			return true;
 		
-		if($in instanceof Byte)
+		if(preg_match(Byte::PATTERN, $in))
+			return true;
+		
+		if(is_string($in))
 			return true;
 		
 		return false;
@@ -104,37 +110,115 @@ class ElementList extends Reader implements Element, Buffer
 	/**
 	 * Iterate through a stream and match the encoding of an integer.
 	 * 
-	 * @param string $in The stream to read
-	 * @throws \DSH\Bencode\Exceptions\ElementListException
+	 * @param string $in The stream to read as an array
+	 * @return \DSH\Bencode\Integer
 	 */
-	private function _readInt($in)
+	private function _readInt(&$in)
 	{
 		$flag = false;
 		$stack = new Stack();
+		$int = 0;
 		
-		foreach(str_split($in) as $c) {
-			
+		$cursor = 0;
+		$start = 0;
+		$end = 0;
+		
+		$in = str_split($in);
+		
+		// steps through each character of the stream
+		foreach($in as $c) {
+			if($flag) {
+				if($c == Integer::END) {
+					$flag = false;
+					$end = $cursor;
+					break;
+				}
+				
+				$stack->push((int) $c);
+				$cursor++;
+			}
 			
 			if($c == Integer::START) {
 				$flag = true;
-				continue;
-			}
-			elseif($c == Integer::END) {
-				$flag = false;
+				$start = $cursor++;
 			}
 		}
+		
+		// remove the int from the list
+		for($i = $start; $i < $end; $i++)
+			unset($in[$i]);
+		
+		// rebuilds the stream sans the integer encoded
+		$in = implode("", array_values($in));
+		
+		foreach($stack->dump() as $d)
+			$int += (int) $d;
+		
+		return new Integer($int);
 	}
 	
 	/**
 	 * Iterate through a stream and match the encoding of a byte.
 	 * 
 	 * @param string $in The stream to read
-	 * @throws \DSH\Bencode\Exceptions\ElementListException;
+	 * @throws \DSH\Bencode\Exceptions\ElementListException
+	 * @return \DSH\Bencode\Byte
 	 */
 	private function _readByte(&$in)
 	{
-		foreach(str_split($in) as $c) {
+		$size_flag = false;
+		$raw_flag = false;
+		
+		$byte_stack = new Stack();
+		$int_stack = new Stack();
+		
+		$byte_buffer = array('size' => 0, 'raw' => '');
+		
+		$start = 0;
+		$end = 0;
+		$cursor = 0;
+		
+		$in = str_split($in);
+		
+		// steps through the stream
+		foreach($in as $c) {
+			if($size_flag) {
+				if(is_int($c)) {
+					$int_stack->push((int) $c);
+					$cursor++;
+					continue;
+				}
+			}
 			
+			if($raw_flag) {
+				$byte_stack->push($c);
+				$cursor++;
+			}
+			
+			if(is_int($c)) {
+				$size_flag = true;
+				$start = $cursor++;
+				$int_stack->push($c);
+				continue;
+			}
+			
+			if($c == Byte::SEPERATOR) {
+				$size_flag = false;
+				
+				foreach($int_stack->dump() as $i)
+					$byte_buffer['size'] += (int) $i;
+				
+				$raw_flag = true;
+				$cursor++;
+				continue;
+			}
 		}
+		
+		for($i = $start; $i < $end; $i++)
+			unset($in[$i]);
+		
+		$in = implode("", array_values($in));
+		
+		return new Byte($byte);
 	}
 }

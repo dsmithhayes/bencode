@@ -15,6 +15,7 @@ use DSH\Bencode\Exceptions\ByteException;
  */
 class Byte implements Element, Buffer
 {
+	const SEPERATOR = ':';
 	const PATTERN = '/\d+:\w+/';
 	
 	private $_buf = array(

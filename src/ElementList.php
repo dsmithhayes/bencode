@@ -27,12 +27,12 @@ class ElementList extends Reader implements Element, Buffer
 	{
 		if(empty($in))
 			$this->_buf = $in;
-		else {
-			foreach($in as $i) {
+		else
+			foreach($in as &$i)
 				if($this->_checkInteger($i))
-				
-			}
-		}
+					$this->_buf[] = new Integer($i);
+				elseif($this->_chckByte($i))
+					$this->_buf[] = new Byte($i);
 	}
 	
 	public function encode()
@@ -93,5 +93,42 @@ class ElementList extends Reader implements Element, Buffer
 			return true;
 		
 		return false;
+	}
+	
+	/**
+	 * Iterate through a stream and match the encoding of an integer.
+	 * 
+	 * @param string $in The stream to read
+	 * @throws \DSH\Bencode\Exceptions\ElementListException
+	 */
+	private function _readInt($in)
+	{
+		$flag = false;
+		$stack = new Stack();
+		
+		foreach(str_split($in) as $c) {
+			
+			
+			if($c == Integer::START) {
+				$flag = true;
+				continue;
+			}
+			elseif($c == Integer::END) {
+				$flag = false;
+			}
+		}
+	}
+	
+	/**
+	 * Iterate through a stream and match the encoding of a byte.
+	 * 
+	 * @param string $in The stream to read
+	 * @throws \DSH\Bencode\Exceptions\ElementListException;
+	 */
+	private function _readByte(&$in)
+	{
+		foreach(str_split($in) as $c) {
+			
+		}
 	}
 }

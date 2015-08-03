@@ -10,10 +10,7 @@ class Dictionary extends Reader implements Element, Buffer
 	const START = 'd';
 	const END = 'e';
 	
-	private $_buf = array(
-		'encoded' => array(), 
-		'Element' => array()
-	);
+	private $_buf = array();
 	
 	public function __construct($in = null)
 	{

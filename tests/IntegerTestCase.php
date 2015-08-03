@@ -6,7 +6,11 @@ class IntegerTestCase extends PHPUnit_Framework_TestCase
 {
 	private $_values = array(0, 1, -45, 4000);
 	private $_encoded = 'i35e';
-	private $_improper = 'g34e';
+	
+	private $_improper = array(
+		'encoding' => 'g34e', 
+		'string' => 'totally wrong'
+	);
 	
 	public function testIntegerConstruction()
 	{
@@ -27,12 +31,27 @@ class IntegerTestCase extends PHPUnit_Framework_TestCase
 		$this->assertEquals($this->_encoded, $encoded_int->encode());
 	}
 	
+	public function testIntegerValidBuffer()
+	{
+		$int = new Integer($this->_values[3]);
+		$this->assertTrue(is_int($int->write()));
+	}
+	
 	/**
 	 * @expectedException \DSH\Bencode\Exceptions\IntegerException
 	 */
 	public function testIntegerExceptionEncoding()
 	{
 		$int = new Integer();
-		$int->decode($this->_improper);
+		$int->decode($this->_improper['encoding']);
+	}
+	
+	/**
+	 * @expectedException \DSH\Bencode\Exceptions\IntegerException
+	 */
+	public function testIntegerExceptionInvalid()
+	{
+		$int = new Integer();
+		$int->read($this->_improper['string']);
 	}
 }

@@ -7,10 +7,13 @@ use Bencode\Exception\DictionaryException;
 
 class Dictionary extends Reader implements Element, Buffer
 {
-	private $_buf = ['encoded' => [], 'Element' => []]; 
-	
 	const START = 'd';
-	const END = parent::END;
+	const END = 'e';
+	
+	private $_buf = array(
+		'encoded' => array(), 
+		'Element' => array()
+	);
 	
 	public function __construct($in = null)
 	{

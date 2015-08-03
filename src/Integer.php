@@ -77,12 +77,12 @@ class Integer extends Reader implements Element, Buffer
 	public function valid($in)
 	{
 		if($this->readFirst($in) != self::START)
-			throw new IntegerException('Improperly encoded: ' . $in);
+			throw new IntegerException('improperly encoded: ' . $in);
 		
 		if($this->readLast($in) != self::END)
-			throw new IntegerException('Improperly encoded: '. $in);
+			throw new IntegerException('improperly encoded: '. $in);
 		
-		return true;		
+		return true;
 	}
 	
 	/**

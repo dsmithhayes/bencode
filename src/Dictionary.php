@@ -17,6 +17,7 @@ class Dictionary extends Reader implements Element, Buffer
 {
 	const START = 'd';
 	const END = 'e';
+	const PATTERN = '/^d.*e$/';
 	
 	private $_buf = array();
 	

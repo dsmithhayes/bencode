@@ -37,7 +37,14 @@ class ElementList extends Reader implements Element, Buffer
 	
 	public function encode()
 	{
+		$buffer = self::START;
 		
+		foreach($this->_buf as $data)
+			$buffer .= $data->encode();
+		
+		$buffer .= self::END;
+		
+		return $buffer;
 	}
 	
 	public function decode($in)
@@ -58,7 +65,9 @@ class ElementList extends Reader implements Element, Buffer
 	
 	public function read($in)
 	{
-		
+		while(isset($in)) {
+			
+		}
 	}
 	
 	public function write()
@@ -113,7 +122,7 @@ class ElementList extends Reader implements Element, Buffer
 	 * @param string $in The stream to read as an array
 	 * @return \DSH\Bencode\Integer
 	 */
-	private function _readInt(&$in)
+	public function readInt(&$in)
 	{
 		$flag = false;
 		$stack = new Stack();
@@ -145,16 +154,35 @@ class ElementList extends Reader implements Element, Buffer
 		}
 		
 		// remove the int from the list
-		for($i = $start; $i < $end; $i++)
+		for($i = $start; $i <= $end; $i++)
 			unset($in[$i]);
 		
 		// rebuilds the stream sans the integer encoded
 		$in = implode("", array_values($in));
 		
 		foreach($stack->dump() as $d)
-			$int += (int) $d;
+			$int .= $d;
 		
-		return new Integer($int);
+		return new Integer((int) $int);
+	}
+	
+	/**
+	 * Interate through a stream and read an encoded byte.
+	 * 
+	 * @param string $in a raw stream by reference.
+	 * @return \DSH\Bencode\Byte
+	 */
+	public function readByte(&$in)
+	{
+		$size = $this->readByteSize($in);
+		$raw = $this->readByteRaw($in);
+		
+		$buffer = array(
+			'size' => $size,
+			'raw' => $raw
+		);
+		
+		return new Byte($buffer);
 	}
 	
 	/**
@@ -162,63 +190,64 @@ class ElementList extends Reader implements Element, Buffer
 	 * 
 	 * @param string $in The stream to read
 	 * @throws \DSH\Bencode\Exceptions\ElementListException
-	 * @return \DSH\Bencode\Byte
+	 * @return int the size of the string
 	 */
-	private function _readByte(&$in)
+	public function readByteSize(&$in)
 	{
-		$size_flag = false;
-		$raw_flag = false;
-		
-		$byte_stack = new Stack();
-		$int_stack = new Stack();
-		
-		$byte_buffer = array('size' => 0, 'raw' => '');
-		
-		$start = 0;
-		$end = 0;
+		$flag = false;
 		$cursor = 0;
+		$stack = new Stack();
+		$buffer = 0;
 		
 		$in = str_split($in);
 		
-		// steps through the stream
 		foreach($in as $c) {
-			if($size_flag) {
-				if(is_int($c)) {
-					$int_stack->push((int) $c);
-					$cursor++;
-					continue;
-				}
-			}
-			
-			if($raw_flag) {
-				$byte_stack->push($c);
-				$cursor++;
-			}
-			
-			if(is_int($c)) {
-				$size_flag = true;
-				$start = $cursor++;
-				$int_stack->push($c);
-				continue;
-			}
-			
 			if($c == Byte::SEPERATOR) {
-				$size_flag = false;
-				
-				foreach($int_stack->dump() as $i)
-					$byte_buffer['size'] += (int) $i;
-				
-				$raw_flag = true;
 				$cursor++;
-				continue;
+				break;
 			}
+			
+			$stack->push((int) $c);
+			$cursor++;
 		}
 		
-		for($i = $start; $i < $end; $i++)
+		for($i = 0; $i <= $cursor; $i++)
 			unset($in[$i]);
 		
 		$in = implode("", array_values($in));
 		
-		return new Byte($byte);
+		foreach($stack->dump() as $data)
+			$buffer .= $data;
+		
+		return (int) $buffer;
+	}
+	
+	/**
+	 * Iterate through as stream and collect the bytes by the $size.
+	 * 
+	 * @param string $in a raw stream, by reference
+	 * @param int $size how many bytes to read.
+	 * @return string the characters read
+	 */
+	public function readByteRaw(&$in)
+	{
+		$stack = new Stack();
+		$buffer = '';
+		
+		$size = strlen($in);
+		
+		$in = str_split($in);
+		
+		for($i = 0; $i < $size; $i++) {
+			$stack->push($in[$i]);
+			unset($in[$i]);
+		}
+		
+		$in = implode("", array_values($in));
+		
+		foreach($stack->dump() as $data)
+			$buffer .= $data;
+		
+		return $buffer;
 	}
 }

@@ -7,6 +7,10 @@ use DSH\Bencode\Core\Buffer;
 use DSH\Bencode\Exceptions\IntegerException;
 use DSH\Stack\Stack;
 
+/**
+ * An integer is encoded with an 'i' prefix and an 'e' suffix. A
+ * good example would be: 45, -23 
+ */
 class Integer implements Element, Buffer
 {
 	protected $_buffer;
@@ -16,22 +20,26 @@ class Integer implements Element, Buffer
 	 */
 	public function __construct($in = 0)
 	{
-		if(!is_numeric($in))
-			throw new IntegerException('construction from non-integer');
-		
-		$this->_buffer = $in;
+		$this->read($in);
 	}
 	
+	/**
+	 * @return string A stream of the encoded integer.
+	 */
 	public function encode()
 	{
 		return 'i' . $this->_buffer . 'e';
 	}
 	
+	/**
+	 * @param string $stream Reads the stream into the buffer.
+	 * @throws \DSH\Bencode\Exceptions\IntegerException
+	 */
 	public function decode($stream)
 	{
-		$flag = false;
+		$flag   = false;
 		$stream = str_split($stream);
-		$stack = new Stack();
+		$stack  = new Stack();
 		$buffer = '';
 		
 		foreach($stream as $c) {
@@ -58,13 +66,23 @@ class Integer implements Element, Buffer
 		$this->_buffer = $buffer;
 	}
 	
-	public function read($value)
-	{	
-		$this->_buffer = intval($value);
-	}
-	
+	/**
+	 * @return int The value in the buffer.
+	 */
 	public function write()
 	{
 		return $this->_buffer;
+	}
+	
+	/**
+	 * @param int $value An integer to store in the buffer.
+	 * @throws \DSH\Bencode\Exceptions\IntegerException
+	 */
+	public function read($value)
+	{
+		if(!is_numeric($value))
+			throw new IntegerException('reading from non-integer');
+			
+		$this->_buffer = intval($value);
 	}
 }

@@ -4,6 +4,13 @@ namespace DSH\Bencode\Core;
 
 interface Element
 {
-	public function encode($stream);
-	public function decode();
+	/**
+	 * Returns an encoded stream of the value in the buffer.
+	 */
+	public function encode();
+	
+	/**
+	 * Reads a stream and extracts the valid encoding of an element. 
+	 */
+	public function decode($stream);
 }

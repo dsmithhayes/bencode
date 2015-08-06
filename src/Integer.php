@@ -7,5 +7,10 @@ use DSH\Bencode\Core\Streamable;
 
 class Integer implements Element, Streamable
 {
+	protected $_buffer;
 	
+	public function __construct($int)
+	{
+		
+	}
 }

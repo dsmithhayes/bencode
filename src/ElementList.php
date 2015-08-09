@@ -46,7 +46,48 @@ class ElementList implements Element, Buffer
 	
 	public function decode($stream)
 	{
+		$stream    = str_split($stream);
+		$byte_flag = false;
+		$int_flag  = false;
 		
+		for($i = 0; $i < count($stream); $i++) {
+			if($stream[$i] === 'l') {
+				unset($stream[$i]);
+				continue;
+			}
+			
+			if($int_flag) {
+				$stream = implode('', array_values($stream));
+				$int = new Integer();
+				$stream = $int->decode($stream);
+				$this->_buffer[] = $int->write();
+				$stream = str_split($stream);
+				$int_flag = false;
+				continue;
+			}
+			
+			if($byte_flag) {
+				$stream = implode('', array_values($stream));
+				$byte = new Byte();
+				$stream = $byte->decode($stream);
+				$this->_buffer[] = $byte->write();
+				$stream = str_split($stream);
+				$byte_flag = false;
+				continue;
+			}
+			
+			if(is_numeric($stream[$i])) {
+				$byte_flag = true;
+				$i--;
+				continue;
+			}
+			
+			if($stream[$i] === 'i') {
+				$int_flag = true;
+				$i--;
+				continue;
+			}
+		}
 	}
 	
 	public function write()

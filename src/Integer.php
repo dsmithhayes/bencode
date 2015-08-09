@@ -69,13 +69,13 @@ class Integer implements Element, Buffer
 			}
 			
 			if($flag)
-				$stack->push($c);
+				$stack->push($stream[$i]);
 			
 			unset($stream[$i]);
 		}
 		
 		foreach($stack->dump() as $d)
-			$buffer += $d;
+			$buffer .= $d;
 		
 		if(!is_numeric($buffer))
 			throw new IntegerException('decoded invalid integer');

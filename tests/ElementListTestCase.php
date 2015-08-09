@@ -8,6 +8,8 @@ class ElementListTestCase extends PHPUnit_Framework_TestCase
 	{
 		$list = new ElementList();
 		$this->assertEmpty($list->write());
+		
+		return $list;
 	}
 	
 	public function testBasicConstruction()
@@ -41,5 +43,15 @@ class ElementListTestCase extends PHPUnit_Framework_TestCase
 	public function testArrayEncoding(ElementList $list)
 	{
 		$this->assertEquals('li0ei1e5:helloe', $list->encode());
+	}
+	
+	/**
+	 * @depends testEmptyConstruction
+	 */
+	public function testIntegerDecoding(ElementList $list)
+	{
+		$stream = 'li35e4:teste';
+		$list->decode($stream);
+		$this->assertEquals($stream, $list->encode());
 	}
 }

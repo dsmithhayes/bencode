@@ -38,6 +38,12 @@ class IntegerTestCase extends PHPUnit_Framework_TestCase
 		$this->assertEquals(-1, $integer->write());
 	}
 	
+	public function testFloatConstruction()
+	{
+		$integer = new Integer(1.5);
+		$this->assertEquals(1, $integer->write());
+	}
+	
 	/**
 	 * @expectedException \DSH\Bencode\Exceptions\IntegerException
 	 */

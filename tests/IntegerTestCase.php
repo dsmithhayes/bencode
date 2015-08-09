@@ -59,7 +59,25 @@ class IntegerTestCase extends PHPUnit_Framework_TestCase
 	 */
 	public function testNegativeEncoding(Integer $int)
 	{
-		$int = new Integer(-1);
+		$int->read(-1);
 		$this->assertEquals('i-1e', $int->encode());
+	}
+
+	/**
+	 * @depends testBasicConstruction
+	 * @expectedException \DSH\Bencode\Exceptions\IntegerException
+	 */
+	public function testInvalidEncoding(Integer $int)
+	{
+		$int->read('hello!');
+	}
+	
+	/**
+	 * @depends testBasicConstruction
+	 */
+	public function testBasicDecoding(Integer $int)
+	{
+		$int->decode('4:test');
+		$this->assertEquals('test', $int->write());
 	}
 }

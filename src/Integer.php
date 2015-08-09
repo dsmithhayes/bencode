@@ -13,6 +13,8 @@ use DSH\Stack\Stack;
  */
 class Integer implements Element, Buffer
 {
+	const PATTERN = '/^i\d+e/';
+	
 	protected $_buffer;
 	
 	/**
@@ -50,7 +52,7 @@ class Integer implements Element, Buffer
 			
 			if($c === 'e') {
 				$flag = false;
-				continue;
+				break;
 			}
 			
 			if($flag)

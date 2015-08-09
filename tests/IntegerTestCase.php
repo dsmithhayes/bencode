@@ -71,13 +71,4 @@ class IntegerTestCase extends PHPUnit_Framework_TestCase
 	{
 		$int->read('hello!');
 	}
-	
-	/**
-	 * @depends testBasicConstruction
-	 */
-	public function testBasicDecoding(Integer $int)
-	{
-		$int->decode('4:test');
-		$this->assertEquals('test', $int->write());
-	}
 }

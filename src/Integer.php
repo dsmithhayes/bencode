@@ -9,12 +9,18 @@ use DSH\Stack\Stack;
 
 /**
  * An integer is encoded with an 'i' prefix and an 'e' suffix. A
- * good example would be: 45, -23 
+ * good example would be: i45e, i-23e.
  */
 class Integer implements Element, Buffer
 {
+	/**
+	 * @const PATTERN The regex pattern that matches an encoded integer.
+	 */
 	const PATTERN = '/^i\d+e/';
 	
+	/**
+	 * @var int A raw integer buffer.
+	 */
 	protected $_buffer;
 	
 	/**
@@ -26,6 +32,8 @@ class Integer implements Element, Buffer
 	}
 	
 	/**
+	 * Returns the encoded buffer.
+	 * 
 	 * @return string A stream of the encoded integer.
 	 */
 	public function encode()
@@ -34,6 +42,9 @@ class Integer implements Element, Buffer
 	}
 	
 	/**
+	 * Reads a stream character for character until the suffix ('e') is found
+	 * and returns the remainder of the string.
+	 * 
 	 * @param string $stream Reads the stream into the buffer.
 	 * @throws \DSH\Bencode\Exceptions\IntegerException
 	 */
@@ -44,31 +55,39 @@ class Integer implements Element, Buffer
 		$stack  = new Stack();
 		$buffer = '';
 		
-		foreach($stream as $c) {
-			if($c === 'i') {
+		for($i = 0; $i < count($stream); $i++) {
+			if($stream[$i] === 'i') {
 				$flag = true;
+				unset($stream[$i]);
 				continue;
 			}
 			
-			if($c === 'e') {
+			if($stream[$i] === 'e') {
 				$flag = false;
+				unset($stream[$i]);
 				break;
 			}
 			
 			if($flag)
 				$stack->push($c);
+			
+			unset($stream[$i]);
 		}
 		
-		foreach($stack->dump() as $i)
-			$buffer .= $i;
+		foreach($stack->dump() as $d)
+			$buffer += $d;
 		
 		if(!is_numeric($buffer))
 			throw new IntegerException('decoded invalid integer');
 		
 		$this->_buffer = $buffer;
+		
+		return implode('', array_values($stream));
 	}
 	
 	/**
+	 * Returns the raw buffer.
+	 * 
 	 * @return int The value in the buffer.
 	 */
 	public function write()
@@ -77,6 +96,8 @@ class Integer implements Element, Buffer
 	}
 	
 	/**
+	 * Reads in a raw value and stores it in the buffer.
+	 * 
 	 * @param int $value An integer to store in the buffer.
 	 * @throws \DSH\Bencode\Exceptions\IntegerException
 	 */

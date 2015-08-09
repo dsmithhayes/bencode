@@ -13,9 +13,14 @@ class ElementListTestCase extends PHPUnit_Framework_TestCase
 	
 	public function testConstruction()
 	{
-		$empty_element_list = new ElementList();
+		$element_list = new ElementList();
 		$array_element_list = new ElementList($this->_valid_raw_array);
 		$raw_element_list = new ElementList($this->_valid_raw_stream);
+		
+		$element_list->read($array_element_list->encode());
+		
+		$this->assertEquals($array_element_list->encode(), $element_list->encode());
+		
 	}
 	
 	public function testReadInt()

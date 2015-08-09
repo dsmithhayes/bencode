@@ -1,170 +1,51 @@
-<?php namespace DSH\Bencode;
+<?php
+
+namespace DSH\Bencode;
 
 use DSH\Bencode\Core\Element;
 use DSH\Bencode\Core\Buffer;
-use DSH\Bencode\Core\Reader;
 use DSH\Bencode\Exceptions\ByteException;
+use DSH\Stack\Stack;
 
-/**
- * Bytes are encoded with the size of the value and the value itself
- * seperated by a colon. So like this: 4:test. Byte elements don't extend
- * the Reader class because they are encoded differently than the other
- * elements.
- * 
- * @author Dave Smith-Hayes <dsmithhayes@gmail.com>
- */
 class Byte implements Element, Buffer
 {
-	const SEPERATOR = ':';
-	const PATTERN = '/\d+:\w+/';
+	const PATTERN = '/\d+:\w+';
 	
-	private $_buf = array(
-		'size' => 0,
-		'raw'  => ''
-	);
+	protected $_buffer;
 	
 	/**
-	 * You can construct an empty byte, or give it a stream to encode. The
-	 * value can also be an encoded string.
-	 * 
-	 * @param string|null if set, create the byte from the string
-	 * @throws \DSH\Bencode\Exceptions\ByteException
+	 * @param string $buffer a raw byte.
 	 */
-	public function __construct($in = null)
+	public function __construct($buffer = '')
 	{
-		if(isset($in))
-			if(is_string($in))
-				if(preg_match(self::PATTERN, $in))
-					$this->decode($in);
-				else
-					$this->read($in);
-			elseif(is_array($in)) {
-				if(array_key_exists('size', $in)
-						&& array_key_exists('raw', $in))
-				{
-					$this->_buf['size'] = $in['size'];
-					$this->_buf['raw'] = $in['raw'];
-				}
-				else
-					throw new ByteException('improper buffer array');
-			}
-			elseif($in instanceof self)
-				$this->_buf = $in->write();
-			else
-				throw new ByteException('invalid byte');
+		$this->read($buffer);
 	}
 	
-	/**
-	 * Implemented from the Core\Element interface this returns a stream
-	 * of an encoded byte. Something like '4:test'
-	 * 
-	 * @throws \DSH\Bencode\Exceptions\ByteException
-	 * @return string Encoded byte stream
-	 */
 	public function encode()
 	{
-		if($this->_buf['size'] !== strlen($this->_buf['raw']))
-			throw new ByteException('internal buffer: size mismatch: ' 
-					. $this->_buf['raw']
-					. ' : ' . $this->_buf['size']);
-		
-		return $this->_buf['size'] . self::SEPERATOR . $this->_buf['raw'];
+		return strlen($this->_buffer) . ':' . $this->_buffer; 
 	}
 	
-	/**
-	 * Implemented from the Core\Element interfae this takes in a formatted
-	 * stream of a byte and places it in the internal buffer.
-	 * 
-	 * @param string $in An encoded byte (4:test)
-	 * @throws \DSH\Bencode\Exceptions\ByteException
-	 * @return void
-	 * 
-	 */
-	public function decode($in)
+	public function decode($stream)
 	{
-		// throws ByteException here.
-		if($this->valid($in)) {
-			$in = explode(":", $in);
-			$this->read($in[1]);
+		$stream = str_split($stream);
+		$buffer = '';
+		$size   = 0;
+		
+		foreach($stream as $c) {
+			if(is_numeric($c)) {
+				
+			}
 		}
 	}
 	
-	/**
-	 * Checks if the stream is valid.
-	 * 
-	 * @param string $in An encoded byte (4:test)
-	 * @throws \DSH\Bencode\Exceptions\ByteException
-	 * @return bool Returns true if the byte is encoded properly.
-	 */
-	public function valid($in)
-	{		
-		if(!preg_match(self::PATTERN, $in))
-			throw new ByteException('improper byte encoding: ' . $in);
-		
-		$in = explode(':', $in);
-		
-		if((int) $in[0] !== strlen($in[1]))
-			throw new ByteException('internal buffer: size mismatch: '
-					. $in[1]
-					. ' : ' 
-					. $in[0]);
-		
-		return true; 
+	public function write()
+	{
+		return $this->_buffer;
 	}
 	
-	/**
-	 * Implemented from the Element interface, checks if the given value can
-	 * be represented as a value Byte.
-	 * 
-	 * @param \DSH\Bencode\Byte|string $in and instance of a Byte object, an
-	 * 	encoded stream or a raw string.
-	 * @return bool Returns true if the value can be represented as a Byte
-	 */
-	public function check($in)
+	public function read($value)
 	{
-		if($in instanceof Byte)
-			return true;
-		
-		if(preg_match(Byte::PATTERN, $in))
-			return true;
-		
-		if(is_string($in))
-			return true;
-		
-		return false;
-	}
-	
-	/**
-	 * Implemented from the Core\Buffer interface, it returns the internal
-	 * buffer of the object.
-	 * 
-	 * @return mixed[] The internal buffer
-	 */
-	public function write() 
-	{
-		return $this->_buf;
-	}
-	
-	/**
-	 * Implemented from the Core\Buffer interface, it reads a raw stream
-	 * and converts it into the internal buffer array.
-	 * 
-	 * @param string $in The raw stream
-	 */
-	public function read($in) 
-	{
-		$this->_buf['size'] = strlen($in);
-		$this->_buf['raw'] = $in;
-	}
-	
-	/**
-	 * Implemented from the Buffer interface, returns the length of the raw
-	 * data stream
-	 * 
-	 * @return int the length of the raw data stream
-	 */
-	public function length()
-	{
-		return strlen($this->encode());
+		$this->_buffer = $value;
 	}
 }

@@ -1,4 +1,6 @@
-<?php namespace DSH\Bencode\Exceptions;
+<?php
+
+namespace DSH\Bencode\Exceptions;
 
 class ByteException extends \Exception
 {

@@ -3,7 +3,7 @@
     "description": "A simple bencode library for PHP.",
     "homepage": "https://github.com/dsmithhayes/bencode",
     "type": "library",
-    "version": "0.1",
+    "version": "v0.0.2",
     "license": "BSD 3.0",
     "keywords": ["bencode"],
     "authors": [
@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "dsmithhayes/stack": "@dev"
+        "dsmithhayes/stack": "v0.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.7"

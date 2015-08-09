@@ -1,145 +1,90 @@
-<?php namespace DSH\Bencode;
+<?php
+
+namespace DSH\Bencode;
 
 use DSH\Bencode\Core\Element;
 use DSH\Bencode\Core\Buffer;
-use DSH\Bencode\Core\Reader;
 use DSH\Bencode\Exceptions\IntegerException;
+use DSH\Stack\Stack;
 
 /**
- * The Integer is represented in bencode like: i42e. Each object should represent 
- * one encoded integer.
+ * An integer is encoded with an 'i' prefix and an 'e' suffix. A
+ * good example would be: 45, -23 
  */
-
-class Integer extends Reader implements Element, Buffer
+class Integer implements Element, Buffer
 {
-	const START = 'i';
-	const END = 'e';
+	const PATTERN = '/^i\d+e/';
 	
-	const PATTERN = '/i-?\d+e/';
-
-	private $_buf = 0;
+	protected $_buffer;
 	
 	/**
-	 * Constructing from a non-integer throws an IntegerException from the 
-	 * `read()` method. Constructing with null leaves the interal buffer as 0.
-	 * 
-	 * @param int|null $in The value to encode
-	 * @throws \DSH\Bencode\Exceptions\IntegerException
+	 * @param int $in An integer value to be represented. 
 	 */
-	public function __construct($in = null)
+	public function __construct($in = 0)
 	{
-		if(isset($in))
-			if($in instanceof self)
-				$this->read($in->write());
-			elseif(is_int($in))
-				$this->read($in);
-			elseif($this->valid($in))
-				$this->decode($in);
+		$this->read($in);
 	}
 	
 	/**
-	 * Implemented from the Element interface, this method encodes the buffer 
-	 * appropriately.
-	 * 
-	 * @return string Encoded stream of the integer
+	 * @return string A stream of the encoded integer.
 	 */
 	public function encode()
 	{
-		return self::START . $this->_buf . self::END;
+		return 'i' . $this->_buffer . 'e';
 	}
 	
 	/**
-	 * Implemented from the Element interface, this method takes in a 
-	 * string that represents an encoded integer.
-	 * 
-	 * @param string An encoded integer value
+	 * @param string $stream Reads the stream into the buffer.
 	 * @throws \DSH\Bencode\Exceptions\IntegerException
 	 */
-	public function decode($in)
+	public function decode($stream)
 	{
-		if($this->valid($in))
-			$in = (int) $this->dropEncoding($in);
+		$flag   = false;
+		$stream = str_split($stream);
+		$stack  = new Stack();
+		$buffer = '';
 		
-		if(!is_int($in))
-			throw new IntegerException('decoding from non-integer');
+		foreach($stream as $c) {
+			if($c === 'i') {
+				$flag = true;
+				continue;
+			}
+			
+			if($c === 'e') {
+				$flag = false;
+				break;
+			}
+			
+			if($flag)
+				$stack->push($c);
+		}
 		
-		$this->_buf = $in;
+		foreach($stack->dump() as $i)
+			$buffer .= $i;
+		
+		if(!is_numeric($buffer))
+			throw new IntegerException('decoded invalid integer');
+		
+		$this->_buffer = $buffer;
 	}
 	
 	/**
-	 * Throws an IntegerException if its not valid encoded, returns true
-	 * if it is.
-	 * 
-	 * @param string $in Encoded integer value
-	 * @throws \DSH\Bencod\Exceptions\IntegerException
-	 * @return bool Returns true if the value is encoded properly.
-	 */
-	public function valid($in)
-	{
-		if($this->readFirst($in) != self::START)
-			throw new IntegerException('improperly encoded: ' . $in);
-		
-		if($this->readLast($in) != self::END)
-			throw new IntegerException('improperly encoded: '. $in);
-		
-		return true;
-	}
-	
-	/**
-	 * Implemented from the Element interface, returns true if the given
-	 * value can be represented as an Integer.
-	 * 
-	 * @param \DSH\Bencode\Integer|int|string $in an Integer instance, an
-	 * 	actual integer or an encoded stream of an integer.
-	 * @return bool Returns true if the value can be an Integer. 
-	 */
-	public function check($in)
-	{
-		if($in instanceof Integer)
-			return true;
-		
-		if(preg_match(Integer::PATTERN, $in))
-			return true;
-		
-		if(is_int($in))
-			return true;
-		
-		return false;
-	}
-	
-	/**
-	 * Implemented from the Buffer interface, this returns the raw data
-	 * inside of the object's buffer.
-	 * 
-	 * @return int The integer in the buffer
+	 * @return int The value in the buffer.
 	 */
 	public function write()
 	{
-		return $this->_buf;
+		return $this->_buffer;
 	}
 	
 	/**
-	 * Implemented from the Buffer interface this reads in raw data that
-	 * is to be encoded.
-	 * 
-	 * @param int $in The integer to read into the buffer
+	 * @param int $value An integer to store in the buffer.
+	 * @throws \DSH\Bencode\Exceptions\IntegerException
 	 */
-	public function read($in)
+	public function read($value)
 	{
-		if(!is_int($in))
-			throw new IntegerException('reading from non integer');
-		
-		$this->_buf = $in;
-	}
-	
-	/**
-	 * Implemented from the Buffer interface, this returns the total length
-	 * of the raw stream of data.
-	 * 
-	 * @return int the length of the raw stream
-	 */
-	public function length()
-	{
-		return strlen($this->encode());
+		if(!is_numeric($value))
+			throw new IntegerException('reading from non-integer');
+			
+		$this->_buffer = intval($value);
 	}
 }

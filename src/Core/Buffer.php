@@ -1,19 +1,16 @@
-<?php namespace DSH\Bencode\Core;
+<?php
+
+namespace DSH\Bencode\Core;
 
 interface Buffer
 {
 	/**
-	 * Reads in raw data representing the element.
+	 * Reads in a raw value and stores it in the buffer.
 	 */
-	public function read($in);
+	public function read($value);
 	
 	/**
-	 * Returns the raw data in the buffer
+	 * Returns the raw buffer.
 	 */
 	public function write();
-	
-	/**
-	 * Returns the length of the raw data.
-	 */
-	public function length();
 }

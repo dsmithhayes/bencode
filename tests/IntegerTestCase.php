@@ -4,58 +4,80 @@ use DSH\Bencode\Integer;
 
 class IntegerTestCase extends PHPUnit_Framework_TestCase
 {
-	private $_values = array(0, 1, -45, 4000);
-	private $_encoded = 'i35e';
-	
-	private $_improper = array(
-		'encoding' => 'g34e', 
-		'string' => 'totally wrong'
-	);
-	
-	public function testIntegerConstruction()
+	public function testEmptyConstruction()
 	{
-		$empty_int = new Integer();
-		$valid_int = new Integer($this->_values[1]);
-		$encoded_int = new Integer($this->_encoded);
+		$integer = new Integer();
+		$this->assertEquals(0, $integer->write());
+	}
+	
+	public function testBasicConstruction()
+	{
+		$integer = new Integer(1);
+		$this->assertEquals(1, $integer->write());
 		
-		$this->assertEquals('i0e', $empty_int->encode());
-		$this->assertEquals('i1e', $valid_int->encode());
-		$this->assertEquals($this->_encoded, $encoded_int->encode());
+		return $integer;
 	}
 	
-	public function testIntegerNegative()
+	public function testNegativeConstruction()
 	{
-		$negative_int = new Integer($this->_values[2]);
-		$this->assertTrue(($negative_int->write() < 0));
+		$integer = new Integer(-1);
+		$this->assertEquals(-1, $integer->write());
+		
+		return $integer;
 	}
 	
-	public function testIntegerEncoding()
+	public function testStringConstruction()
 	{
-		$encoded_int = new Integer($this->_encoded);
-		$this->assertEquals($this->_encoded, $encoded_int->encode());
+		$integer = new Integer('1');
+		$this->assertEquals(1, $integer->write());
 	}
 	
-	public function testIntegerValidBuffer()
+	public function testNegativeStringConstruction()
 	{
-		$int = new Integer($this->_values[3]);
-		$this->assertTrue(is_int($int->write()));
-	}
-	
-	/**
-	 * @expectedException \DSH\Bencode\Exceptions\IntegerException
-	 */
-	public function testIntegerExceptionEncoding()
-	{
-		$int = new Integer();
-		$int->decode($this->_improper['encoding']);
+		$integer = new Integer('-1');
+		$this->assertEquals(-1, $integer->write());
 	}
 	
 	/**
 	 * @expectedException \DSH\Bencode\Exceptions\IntegerException
 	 */
-	public function testIntegerExceptionInvalid()
+	public function testInvalidConstruction()
 	{
-		$int = new Integer();
-		$int->read($this->_improper['string']);
+		$integer_string = new Integer('words');
+	}
+	
+	/**
+	 * @depends testBasicConstruction
+	 */
+	public function testEncoding(Integer $int)
+	{
+		$this->assertEquals('i1e', $int->encode());
+	}
+	
+	/**
+	 * @depends testNegativeConstruction
+	 */
+	public function testNegativeEncoding(Integer $int)
+	{
+		$int->read(-1);
+		$this->assertEquals('i-1e', $int->encode());
+	}
+
+	/**
+	 * @depends testBasicConstruction
+	 * @expectedException \DSH\Bencode\Exceptions\IntegerException
+	 */
+	public function testInvalidEncoding(Integer $int)
+	{
+		$int->read('hello!');
+	}
+	
+	/**
+	 * @depends testBasicConstruction
+	 */
+	public function testBasicDecoding(Integer $int)
+	{
+		$int->decode('4:test');
+		$this->assertEquals('test', $int->write());
 	}
 }

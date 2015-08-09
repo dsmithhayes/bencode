@@ -44,20 +44,28 @@ class ElementList implements Element, Buffer
 		return 'l' . $buffer . 'e';
 	}
 	
-	public function decode($stream)
+	public function decode($stream, $first = true)
 	{
-		if(!preg_match(self::PATTERN, $stream))
-			throw new ElementListException('invalid encoding: ' . $stream);
+		if($first)
+			$stream = substr($stream, 1, -1);
 		
 		$stream = str_split($stream);
-		$size = count($stream);
 		
-		unset($stream[0]);
-		unset($stream[$size - 1]);
+		if($stream[0] === 'i') {
+			$stream = implode('', $stream);
+			$int = new Integer();
+			
+			$stream = $int->decode($stream);
+		}
+		elseif(is_numeric($stream[0])) {
+			$stream = implode('', $stream);
+			$byte = new Byte();
+			
+			$stream = $byte->decode($stream);
+		}
 		
-		$stream = array_values($stream);
-		$size = count($stream);
-		
+		if(strlen($stream) > 0)
+			$this->decode($stream, false);
 	}
 	
 	public function write()

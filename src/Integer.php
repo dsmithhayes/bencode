@@ -77,8 +77,8 @@ class Integer implements Element, Buffer
 		foreach($stack->dump() as $d)
 			$buffer .= $d;
 		
-		if(!is_numeric($buffer))
-			throw new IntegerException('decoded invalid integer');
+		if(!is_numeric(intval($buffer)))
+			throw new IntegerException('decoded invalid integer: ' . $buffer);
 		
 		$this->_buffer = $buffer;
 		

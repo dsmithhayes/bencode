@@ -46,48 +46,18 @@ class ElementList implements Element, Buffer
 	
 	public function decode($stream)
 	{
-		$stream    = str_split($stream);
-		$byte_flag = false;
-		$int_flag  = false;
+		if(!preg_match(self::PATTERN, $stream))
+			throw new ElementListException('invalid encoding: ' . $stream);
 		
-		for($i = 0; $i < count($stream); $i++) {
-			if($stream[$i] === 'l') {
-				unset($stream[$i]);
-				continue;
-			}
-			
-			if($int_flag) {
-				$stream = implode('', array_values($stream));
-				$int = new Integer();
-				$stream = $int->decode($stream);
-				$this->_buffer[] = $int->write();
-				$stream = str_split($stream);
-				$int_flag = false;
-				continue;
-			}
-			
-			if($byte_flag) {
-				$stream = implode('', array_values($stream));
-				$byte = new Byte();
-				$stream = $byte->decode($stream);
-				$this->_buffer[] = $byte->write();
-				$stream = str_split($stream);
-				$byte_flag = false;
-				continue;
-			}
-			
-			if(is_numeric($stream[$i])) {
-				$byte_flag = true;
-				$i--;
-				continue;
-			}
-			
-			if($stream[$i] === 'i') {
-				$int_flag = true;
-				$i--;
-				continue;
-			}
-		}
+		$stream = str_split($stream);
+		$size = count($stream);
+		
+		unset($stream[0]);
+		unset($stream[$size - 1]);
+		
+		$stream = array_values($stream);
+		$size = count($stream);
+		
 	}
 	
 	public function write()
@@ -101,15 +71,5 @@ class ElementList implements Element, Buffer
 			$this->_buffer = $value;
 		else
 			$this->_buffer[] = $value;
-	}
-	
-	protected function _readInt($value)
-	{
-		return (new Integer($value));
-	}
-	
-	protected function _readByte($value)
-	{
-		return (new Byte($value));
 	}
 }

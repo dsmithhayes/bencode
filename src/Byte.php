@@ -48,7 +48,7 @@ class Byte implements Element, Buffer
 	{
 		$stream = str_split($stream);
 		$buffer = '';
-		$size   = 0;
+		$size   = '';
 		
 		$size_stack   = new Stack();
 		$buffer_stack = new Stack();
@@ -66,9 +66,9 @@ class Byte implements Element, Buffer
 		$stream = array_values($stream);
 		
 		foreach($size_stack->dump() as $d)
-			$size += $d;
+			$size .= $d;
 		
-		for($i = 0; $i < $size; $i++) {
+		for($i = 0; $i < intval($size); $i++) {
 			$buffer_stack->push($stream[$i]);
 			unset($stream[$i]);
 		}

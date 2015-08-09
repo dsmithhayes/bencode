@@ -48,10 +48,11 @@ class ElementListTestCase extends PHPUnit_Framework_TestCase
 	/**
 	 * @depends testEmptyConstruction
 	 */
-	public function testIntegerDecoding(ElementList $list)
+	public function testMixedDecoding(ElementList $list)
 	{
-		$stream = 'li35e4:teste';
+		$stream = 'l4:testi35ee';
 		$list->decode($stream);
+		
 		$this->assertEquals($stream, $list->encode());
 	}
 }

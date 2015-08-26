@@ -9,5 +9,5 @@ use DSH\Bencode\ElementDictionary;
 
 class Bencode
 {
-	
+
 }

@@ -12,9 +12,6 @@
             "email": "dsmithhayes@gmail.com"
         }
     ],
-    "require": {
-        "dsmithhayes/stack": "v0.2"
-    },
     "require-dev": {
         "phpunit/phpunit": "^4.7"
     },

@@ -60,6 +60,12 @@ class BList implements Element, Buffer
      */
     public function decode($stream)
     {
+        if (preg_match(self::PATTERN, $stream)) {
+
+        }
+
+        $stream = str_split($steam);
+
 
     }
 
@@ -87,6 +93,13 @@ class BList implements Element, Buffer
             $this->_buffer = $value;
         } else {
             $this->_buffer[] = strval($value);
+        }
+    }
+
+    public function _check($stream)
+    {
+        if (preg_match($stream)) {
+            $steam = substr($stream, 0, 1);
         }
     }
 }

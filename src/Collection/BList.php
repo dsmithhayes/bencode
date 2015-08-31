@@ -61,12 +61,28 @@ class BList implements Element, Buffer
     public function decode($stream)
     {
         if (preg_match(self::PATTERN, $stream)) {
-
+            $stream = substr($stream, 1);
+            $stream = substr($stream, 0, -1);
         }
 
-        $stream = str_split($steam);
+        $stream = str_split($stream);
 
+        if (is_numeric($stream[0])) {
+            $element = new Byte();
+        } elseif ($stream[0] === 'i') {
+            $element = new Integer();
+        } else {
+            return implode("", $stream);
+        }
 
+        $stream = $element->decode(implode("", $stream));
+        $this->_buffer[] = $element->write();
+
+        if (strlen($stream) > 0) {
+            return $this->decode($stream);
+        }
+
+        return $stream;
     }
 
     /**

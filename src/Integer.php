@@ -69,6 +69,8 @@ class Integer implements Element, Buffer
 
             if ($stream[$i] === 'e') {
                 $flag = false;
+                unset($stream[$i]);
+                break;
             }
 
             unset($stream[$i]);

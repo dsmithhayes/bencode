@@ -86,4 +86,11 @@ class IntegerTestCase extends PHPUnit_Framework_TestCase
         $int->decode('i-1337e');
         $this->assertEquals(-1337, $int->write());
     }
+
+    public function testStreamReturn()
+    {
+        $int = new Integer();
+
+        $this->assertEquals('5:hello', $int->decode('i35e5:hello'));
+    }
 }

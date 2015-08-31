@@ -4,6 +4,7 @@ namespace DSH\Bencode\Collection;
 
 use DSH\Bencode\Core\Element;
 use DSH\Bencode\Core\Buffer;
+use DSH\Bencode\Core\Json;
 use DSH\Bencode\Integer;
 use DSH\Bencode\Byte;
 use DSH\Bencode\Exceptions\BListException;
@@ -67,6 +68,8 @@ class BList implements Element, Buffer
 
         $stream = str_split($stream);
 
+        // This block determines which type of primitive
+        // element is in the list
         if (is_numeric($stream[0])) {
             $element = new Byte();
         } elseif ($stream[0] === 'i') {
@@ -112,10 +115,13 @@ class BList implements Element, Buffer
         }
     }
 
-    public function _check($stream)
+    /**
+     * Returns a JSON encoding of the List.
+     *
+     * @return string A JSON encoded string.
+     */
+    public function json()
     {
-        if (preg_match($stream)) {
-            $steam = substr($stream, 0, 1);
-        }
+        return json_encode($this->_buffer);
     }
 }

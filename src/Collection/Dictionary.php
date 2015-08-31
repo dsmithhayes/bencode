@@ -30,7 +30,7 @@ class Dictionary implements Element, Buffer
     /**
      * Initialize with an array or empty. What ever.
      *
-     * @param array $buffer the array to become the buffer.
+     * @param array $buffer the array to become the buffer
      */
     public function __construct($buffer = [])
     {
@@ -50,7 +50,7 @@ class Dictionary implements Element, Buffer
             $key = new Byte($key);
             $val = new Byte($val);
 
-            $buffer .= $key->encode() . $val->encode();
+            $buffer .= (key->encode() . $val->encode());
         }
 
         $buffer .= 'e';
@@ -67,7 +67,20 @@ class Dictionary implements Element, Buffer
      */
     public function decode($stream)
     {
+        if (preg_match(self::PATTERN, $stream) {
+            $stream = substr($stream, 1);
+            $stream = substr($stream, 0, -1);
+        }
 
+        $stream = str_split($stream);
+
+        // decode the bytes, build the array
+
+        if (strlen($stream) > 0) {
+            return $this->decode($stream);
+        }
+
+        return $stream;
     }
 
     /**
@@ -81,19 +94,23 @@ class Dictionary implements Element, Buffer
     }
 
     /**
-     * Because of how Dictionaries are encoded, the read value can
-     * either be a key-value array, or an associative array with the
-     * first value being the key. All keys must be Bytes.
+     * Indexed arrays will have their indices encoded as Bytes,
+     * otherwise pass any array.
      * 
-     * @param array $value Key-value array
+     * @param array $value An array to become the Dictionary
      */
     public function read($value)
     {
-        
+        if (!is_array($value)) {
+            throw new DictionaryException('reading from non-array');
+        }
+
+        // set as the buffer
+        $this->_buffer = $value;
     }
 
     /**
-     * Encodes the internal buffer as JSON
+     * Encodes the internal buffer as JSON.
      *
      * @return string JSON encoded internal buffer
      */

@@ -50,7 +50,7 @@ class Byte implements Element, Buffer
         $size   = count($stream);
 
         $sizeList   = new \SplDoublyLinkedList();
-        $bufferList = new \SplDoublyLinkedList();
+        $bufList = new \SplDoublyLinkedList();
 
         for ($i = 0; $i < count($stream); $i++) {
             if ($stream[$i] === ':') {
@@ -71,12 +71,12 @@ class Byte implements Element, Buffer
         }
 
         for ($i = 0; $i < $size; $i++) {
-            $bufferList->push($stream[$i]);
+            $bufList->push($stream[$i]);
             unset($stream[$i]);
         }
 
-        for ($bufferList->rewind(); $bufferList->valid(); $bufferList->next()) {
-            $buffer .= $bufferList->current();
+        for ($bufrList->rewind(); $bufList->valid(); $bufList->next()) {
+            $buffer .= $bufList->current();
         }
 
         $this->_buffer = $buffer;

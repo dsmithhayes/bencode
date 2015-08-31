@@ -39,4 +39,10 @@ class ByteTestCase extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals('4:fail', $byte->encode());
     }
+
+    public function testIntegerStreamEncoding()
+    {
+        $byte = new Byte('25');
+        $this->assertEquals('2:25', $byte->encode());
+    }
 }

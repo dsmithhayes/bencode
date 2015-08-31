@@ -54,5 +54,16 @@ class BListTestCase extends PHPUnit_Framework_TestCase
         $list->decode($stream);
 
         $this->assertEquals($stream, $list->encode());
+
+        return $list;
+    }
+
+    /**
+     * @depends testMixedDecoding
+     */
+    public function testArrayLength(BList $list)
+    {
+        // $stream = 'l4:testi35e5:helloe';
+        $this->assertEquals(3 , count($list->write()));
     }
 }

@@ -52,6 +52,7 @@ class Byte implements Element, Buffer
         $sizeList   = new \SplDoublyLinkedList();
         $bufList = new \SplDoublyLinkedList();
 
+        // read the size of the byte from the stream
         for ($i = 0; $i < count($stream); $i++) {
             if ($stream[$i] === ':') {
                 unset($stream[$i]);
@@ -70,12 +71,14 @@ class Byte implements Element, Buffer
             $size .= $sizeList->current();
         }
 
+        // read the length of the byte from the stream
         for ($i = 0; $i < $size; $i++) {
             $bufList->push($stream[$i]);
             unset($stream[$i]);
         }
 
-        for ($bufrList->rewind(); $bufList->valid(); $bufList->next()) {
+        // read the byte into the buffer
+        for ($bufList->rewind(); $bufList->valid(); $bufList->next()) {
             $buffer .= $bufList->current();
         }
 

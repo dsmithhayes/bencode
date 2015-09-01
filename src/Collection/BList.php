@@ -42,12 +42,12 @@ class BList implements Element, Buffer
 
         foreach ($this->_buffer as $b) {
             if (is_numeric($b)) {
-                $int = new Integer($b);
-                $buffer .= $int->encode();
+                $element = new Integer($b);
             } else {
-                $byte = new Byte($b);
-                $buffer .= $byte->encode();
+                $element = new Byte($b);
             }
+
+            $buffer .= $element->encode();
         }
 
         return 'l' . $buffer . 'e';
@@ -61,6 +61,7 @@ class BList implements Element, Buffer
      */
     public function decode($stream)
     {
+        // drop the beginning and end if they exist
         if (preg_match(self::PATTERN, $stream)) {
             $stream = substr($stream, 1);
             $stream = substr($stream, 0, -1);

@@ -9,5 +9,8 @@ namespace DSH\Bencode\Core;
 
 interface Json
 {
+    /**
+     * Returns a JSON encoding of the internal buffer of the element.
+     */
     public function json();
 }

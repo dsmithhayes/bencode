@@ -15,7 +15,7 @@ use DSH\Bencode\Exception\Dictionary;
  * key is a byte.
  */
 
-class Dictionary implements Element, Buffer
+class Dictionary implements Element, Buffer, Json
 {
     /**
      * @const The regex pattern that matches an encoded Dictionary

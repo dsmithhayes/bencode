@@ -109,4 +109,21 @@ class Integer implements Element, Buffer
 
         $this->_buffer = intval($value);
     }
+
+    /**
+     * Creates an instance of an Integer.
+     *
+     * @param string|null $stream if set, a stream to decode as an integer
+     * @return DSH\Bencode\Integer an instance of an Integer
+     */
+    public static function integerFactory($stream = null)
+    {
+        $int = new Integer();
+
+        if (isset($stream)) {
+            $int->decode($stream);
+        }
+
+        return $int;
+    }
 }

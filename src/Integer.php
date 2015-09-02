@@ -118,12 +118,6 @@ class Integer implements Element, Buffer
      */
     public static function integerFactory($stream = null)
     {
-        $int = new Integer();
-
-        if (isset($stream)) {
-            $int->decode($stream);
-        }
-
-        return $int;
+        return new Integer($stream);
     }
 }

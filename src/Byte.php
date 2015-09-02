@@ -106,4 +106,9 @@ class Byte implements Element, Buffer
     {
         $this->_buffer = $value;
     }
+
+    public static function byteFactory($stream = null)
+    {
+        return new Byte($stream);
+    }
 }

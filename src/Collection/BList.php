@@ -126,15 +126,4 @@ class BList implements Element, Buffer
     {
         return json_encode($this->_buffer);
     }
-
-    public static function byteFactory($stream = null)
-    {
-        $byte = new Byte();
-
-        if (isset($stream)) {
-            $int->decode($stream);
-        }
-
-        return $byte;
-    }
 }

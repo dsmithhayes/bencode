@@ -93,7 +93,7 @@ a `d` and suffixed with an `e`.
 
     <?php
     
-    user DSH\Bencode\Dictionary;
+    use DSH\Bencode\Dictionary;
 
     $dictionary = new Dictionary(['key' => 'value']);
     echo $dictionary->encode();     // d3:key5:valuee

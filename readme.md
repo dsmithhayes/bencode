@@ -83,3 +83,21 @@ The class is named `BList` because `list` is a reserved keyword in PHP.
 
 ### Dictionary
 
+Dictionaries are key-value lists of bytes. The first element in the list
+is the key, and the second is the value. The Dictionary is prefixed with
+a `d` and suffixed with an `e`.
+
+    d3:key5:valuee
+
+#### Usage
+
+    <?php
+    
+    user DSH\Bencode\Dictionary;
+
+    $dictionary = new Dictionary(['key' => 'value']);
+    echo $dictionary->encode();     // d3:key5:valuee
+    
+    $dictionary->decode('d3:new6:valuese');
+    print_r($dictionary->write());  // ['new' => 'values']
+

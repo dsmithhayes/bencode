@@ -24,6 +24,8 @@ class Integer implements Element, Buffer
 
     /**
      * @param int $in An integer value to be represented.
+     *
+     * @throws \DSH\Bencode\Exception\IntegerException
      */
     public function __construct($in = 0)
     {
@@ -41,10 +43,13 @@ class Integer implements Element, Buffer
     }
 
     /**
+     * @todo make recursive
+     * 
      * Reads a stream character for character until the suffix ('e') is found
      * and returns the remainder of the string.
      *
      * @param string $stream Reads the stream into the buffer.
+     *
      * @throws \DSH\Bencode\Exceptions\IntegerException
      */
     public function decode($stream)
@@ -99,6 +104,7 @@ class Integer implements Element, Buffer
      * Reads in a raw value and stores it in the buffer.
      *
      * @param int $value An integer to store in the buffer.
+     *
      * @throws \DSH\Bencode\Exceptions\IntegerException
      */
     public function read($value)

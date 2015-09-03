@@ -5,6 +5,7 @@ namespace DSH\Bencode\Collection;
 use DSH\Bencode\Core\Element;
 use DSH\Bencode\Core\Buffer;
 use DSH\Bencode\Core\Json;
+use DSH\Bencode\Core\Traits\Pattern;
 use DSH\Bencode\Byte;
 use DSH\Bencode\Integer;
 use DSH\Bencode\Exception\DictionaryException;
@@ -17,6 +18,8 @@ use DSH\Bencode\Exception\DictionaryException;
 
 class Dictionary implements Element, Buffer, Json
 {
+    use Pattern;
+    
     /**
      * @const The regex pattern that matches an encoded Dictionary
      */
@@ -81,10 +84,7 @@ class Dictionary implements Element, Buffer, Json
      */
     public function decode($stream)
     {
-        if (preg_match(self::PATTERN, $stream)) {
-            $stream = substr($stream, 1);
-            $stream = substr($stream, 0, -1);
-        }
+        $stream = $this->dropEncoding($stream, self::PATTERN);
 
         // decide how to decode the stream
         if (!is_numeric($stream[0])) {

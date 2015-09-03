@@ -5,6 +5,7 @@ namespace DSH\Bencode\Collection;
 use DSH\Bencode\Core\Element;
 use DSH\Bencode\Core\Buffer;
 use DSH\Bencode\Core\Json;
+use DSH\Bencode\Core\Traits\Pattern;
 use DSH\Bencode\Integer;
 use DSH\Bencode\Byte;
 use DSH\Bencode\Exception\BListException;
@@ -14,6 +15,7 @@ use DSH\Bencode\Exception\BListException;
  */
 class BList implements Element, Buffer
 {
+    use Pattern;
 
     /**
      * @const PATTERN the regex pattern that matches a Byte
@@ -62,11 +64,7 @@ class BList implements Element, Buffer
      */
     public function decode($stream)
     {
-        // drop the beginning and end if they exist
-        if (preg_match(self::PATTERN, $stream)) {
-            $stream = substr($stream, 1);
-            $stream = substr($stream, 0, -1);
-        }
+        $stream = $this->dropEncoding($stream, self::PATTERN);
 
         // This block determines which type of primitive element is
         // in the list

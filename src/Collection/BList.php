@@ -123,4 +123,12 @@ class BList implements Element, Buffer
     {
         return json_encode($this->_buffer);
     }
+
+    /**
+     * @return string The encoded List
+     */
+    public function __toString()
+    {
+        return $this->encode();
+    }
 }

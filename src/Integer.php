@@ -111,13 +111,13 @@ class Integer implements Element, Buffer
     }
 
     /**
-     * Creates an instance of an Integer.
+     * Hard choice, __toString() the encoded Integer or the
+     * raw buffer? I decided the encoded Integer.
      *
-     * @param string|null $stream if set, a stream to decode as an integer
-     * @return DSH\Bencode\Integer an instance of an Integer
+     * @return string The encoded integer.
      */
-    public static function integerFactory($stream = null)
+    public function __toString()
     {
-        return new Integer($stream);
+        return $this->encode();
     }
 }

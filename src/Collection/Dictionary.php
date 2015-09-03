@@ -57,7 +57,7 @@ class Dictionary implements Element, Buffer, Json
     public function encode()
     {
         $buffer = 'd';
-        
+
         foreach ($this->_buffer as $key => $val) {
             $this->_key->read($key);
             $this->_value->read($val);
@@ -93,7 +93,7 @@ class Dictionary implements Element, Buffer, Json
             );
         }
 
-        // read the stream into a key and value
+        // read the stream into a key and value, each are Byte objects
         $stream = $this->_key->decode($stream);
         $stream = $this->_value->decode($stream);
 
@@ -120,7 +120,7 @@ class Dictionary implements Element, Buffer, Json
     /**
      * Indexed arrays will have their indices encoded as Bytes,
      * otherwise pass any array.
-     * 
+     *
      * @param array $value An array to become the Dictionary
      */
     public function read($value)
@@ -141,5 +141,13 @@ class Dictionary implements Element, Buffer, Json
     public function json()
     {
         return json_encode($this->_buffer);
+    }
+
+    /**
+     * @return string The encoded Dictionary
+     */
+    public function __toString()
+    {
+        return $this->encode();
     }
 }

@@ -107,8 +107,11 @@ class Byte implements Element, Buffer
         $this->_buffer = $value;
     }
 
-    public static function byteFactory($stream = null)
+    /**
+     * @return string The encoded Byte
+     */
+    public function __toString()
     {
-        return new Byte($stream);
+        return $this->encode();
     }
 }

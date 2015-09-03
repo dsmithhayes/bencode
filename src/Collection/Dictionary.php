@@ -18,6 +18,9 @@ use DSH\Bencode\Exception\DictionaryException;
 
 class Dictionary implements Element, Buffer, Json
 {
+    /**
+     * For the dropEncoding() method.
+     */
     use Pattern;
     
     /**

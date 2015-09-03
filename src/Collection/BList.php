@@ -15,6 +15,9 @@ use DSH\Bencode\Exception\BListException;
  */
 class BList implements Element, Buffer
 {
+    /**
+     * For the dropEncoding() method.
+     */
     use Pattern;
 
     /**

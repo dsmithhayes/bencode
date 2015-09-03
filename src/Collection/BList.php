@@ -55,7 +55,7 @@ class BList implements Element, Buffer
 
     /**
      * Reads a raw stream and decodes the List encoded portion
-     * of it.
+     * of it. This will append data to the internal buffer.
      *
      * @param string A raw encoded stream of a Bencode List.
      * @throws \DSH\Bencode\Exception\BListException;
@@ -68,8 +68,6 @@ class BList implements Element, Buffer
             $stream = substr($stream, 0, -1);
         }
 
-        $stream = str_split($stream);
-
         // This block determines which type of primitive element is
         // in the list
         if (is_numeric($stream[0])) {
@@ -77,12 +75,10 @@ class BList implements Element, Buffer
         } elseif ($stream[0] === 'i') {
             $element = new Integer();
         } else {
-            throw new BListException(
-                'Improper encoding: ' . implode("", $stream)
-            );
+            throw new BListException('Improper encoding: ' . $stream);
         }
 
-        $stream = $element->decode(implode("", $stream));
+        $stream = $element->decode($stream);
         $this->_buffer[] = $element->write();
 
         if (strlen($stream) > 0) {

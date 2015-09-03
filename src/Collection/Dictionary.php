@@ -94,7 +94,6 @@ class Dictionary implements Element, Buffer, Json
         }
 
         // read the stream into a key and value
-        $stream = implode("", $stream);
         $stream = $this->_key->decode($stream);
         $stream = $this->_value->decode($stream);
 

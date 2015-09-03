@@ -2,7 +2,4 @@
 
 namespace DSH\Bencode\Exception;
 
-class IntegerException extends \Exception
-{
-
-}
+class IntegerException extends \Exception { }

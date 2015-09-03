@@ -7,7 +7,7 @@ use DSH\Bencode\Core\Buffer;
 use DSH\Bencode\Core\Json;
 use DSH\Bencode\Byte;
 use DSH\Bencode\Integer;
-use DSH\Bencode\Exception\Dictionary;
+use DSH\Bencode\Exception\DictionaryException;
 
 /**
  * The Dictionary class comes with some interesting rules. It is
@@ -28,6 +28,16 @@ class Dictionary implements Element, Buffer, Json
     protected $_buffer;
 
     /**
+     * @var \DSH\Bencode\Byte
+     */
+    private $_key;
+
+    /**
+     * @var \DSH\Bencode\Byte
+     */
+    private $_value;
+
+    /**
      * Initialize with an array or empty. What ever.
      *
      * @param array $buffer the array to become the buffer
@@ -35,6 +45,8 @@ class Dictionary implements Element, Buffer, Json
     public function __construct($buffer = [])
     {
         $this->read($buffer);
+        $this->_key = new Byte();
+        $this->_value = new Byte();
     }
 
     /**
@@ -47,10 +59,10 @@ class Dictionary implements Element, Buffer, Json
         $buffer = 'd';
         
         foreach ($this->_buffer as $key => $val) {
-            $key = new Byte($key);
-            $val = new Byte($val);
+            $this->_key->read($key);
+            $this->_value->read($val);
 
-            $buffer .= (key->encode() . $val->encode());
+            $buffer .= ($this->_key->encode() . $this->_value->encode());
         }
 
         $buffer .= 'e';
@@ -64,17 +76,30 @@ class Dictionary implements Element, Buffer, Json
      * the key and value of the array.
      *
      * @param string $stream Encoded Dictionary
+     * @throws \DSH\Bencode\Exception\DictionaryException
+     * @return string the remainder of the stream, if anything
      */
     public function decode($stream)
     {
-        if (preg_match(self::PATTERN, $stream) {
+        if (preg_match(self::PATTERN, $stream)) {
             $stream = substr($stream, 1);
             $stream = substr($stream, 0, -1);
         }
 
-        $stream = str_split($stream);
+        // decide how to decode the stream
+        if (!is_numeric($stream[0])) {
+            throw new DictionaryException(
+                'Improper stream encoding: ' . implode("", $stream)
+            );
+        }
 
-        // decode the bytes, build the array
+        // read the stream into a key and value
+        $stream = implode("", $stream);
+        $stream = $this->_key->decode($stream);
+        $stream = $this->_value->decode($stream);
+
+        // assign the key and value.
+        $this->_buffer[$this->_key->write()] = $this->_value->write();
 
         if (strlen($stream) > 0) {
             return $this->decode($stream);
@@ -102,7 +127,7 @@ class Dictionary implements Element, Buffer, Json
     public function read($value)
     {
         if (!is_array($value)) {
-            throw new DictionaryException('reading from non-array');
+            throw new DictionaryException('Reading to buffer from non-array');
         }
 
         // set as the buffer

@@ -7,7 +7,7 @@ use DSH\Bencode\Core\Buffer;
 use DSH\Bencode\Core\Json;
 use DSH\Bencode\Integer;
 use DSH\Bencode\Byte;
-use DSH\Bencode\Exceptions\BListException;
+use DSH\Bencode\Exception\BListException;
 
 /**
  * The element list is a stream of encoded elements in a sequence.
@@ -58,6 +58,7 @@ class BList implements Element, Buffer
      * of it.
      *
      * @param string A raw encoded stream of a Bencode List.
+     * @throws \DSH\Bencode\Exception\BListException;
      */
     public function decode($stream)
     {
@@ -69,14 +70,16 @@ class BList implements Element, Buffer
 
         $stream = str_split($stream);
 
-        // This block determines which type of primitive
-        // element is in the list
+        // This block determines which type of primitive element is
+        // in the list
         if (is_numeric($stream[0])) {
             $element = new Byte();
         } elseif ($stream[0] === 'i') {
             $element = new Integer();
         } else {
-            return implode("", $stream);
+            throw new BListException(
+                'Improper encoding: ' . implode("", $stream)
+            );
         }
 
         $stream = $element->decode(implode("", $stream));
@@ -85,8 +88,6 @@ class BList implements Element, Buffer
         if (strlen($stream) > 0) {
             return $this->decode($stream);
         }
-
-        return $stream;
     }
 
     /**

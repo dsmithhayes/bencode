@@ -1,8 +1,5 @@
 <?php
 
-namespace DSH\Bencode\Exceptions;
+namespace DSH\Bencode\Exception;
 
-class ByteException extends \Exception
-{
-	
-}
+class ByteException extends \Exception { }

@@ -66,4 +66,15 @@ class BListTestCase extends PHPUnit_Framework_TestCase
         // $stream = 'l4:testi35e5:helloe';
         $this->assertEquals(3 , count($list->write()));
     }
+
+    /**
+     * @expectedException \DSH\Bencode\Exception\BListException
+     */
+    public function testBListException()
+    {
+        $list = new BList();
+        $stream = 'li34e3:goode';
+
+        $list->decode($stream);
+    }
 }

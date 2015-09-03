@@ -69,17 +69,17 @@ encoding as the Integer. The List is prefixed with `l` and suffixed with
 
 #### Usage
 
-The class is named `BList` because `list` is a reserved keyword in PHP.
+The class is named `BList` because `List` is a reserved keyword in PHP.
 
     <?php
     
-    use DSH\Bencode\BList
+    use DSH\Bencode\Collection\BList
     
     $list = new BList([45, 'hello', 'world', -45]);
     echo $list->encode();       // li45e5:hello5:worldi-45e
     
     $list->decode('li34e4:davee');
-    print_r($list->write();     // [34, 'dave']
+    print_r($list->write());     // [34, 'dave']
 
 ### Dictionary
 
@@ -93,7 +93,7 @@ a `d` and suffixed with an `e`.
 
     <?php
     
-    use DSH\Bencode\Dictionary;
+    use DSH\Bencode\Collection\Dictionary;
 
     $dictionary = new Dictionary(['key' => 'value']);
     echo $dictionary->encode();     // d3:key5:valuee

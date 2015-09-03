@@ -2,12 +2,14 @@
 
 namespace DSH\Bencode;
 
-use DSH\Bencode\Integer;
-use DSH\Bencode\Byte;
-use DSH\Bencode\ElementList;
-use DSH\Bencode\ElementDictionary;
+use DSH\Bencode\Core\Element;
 
 class Bencode
 {
-
+    private $element;
+    
+    public function __construct(Element $element)
+    {
+        $this->element = $element;
+    }
 }

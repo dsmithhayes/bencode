@@ -89,7 +89,7 @@ class Dictionary implements Element, Buffer, Json
         // decide how to decode the stream
         if (!is_numeric($stream[0])) {
             throw new DictionaryException(
-                'Improper stream encoding: ' . implode("", $stream)
+                'Improper stream encoding: ' . $stream
             );
         }
 

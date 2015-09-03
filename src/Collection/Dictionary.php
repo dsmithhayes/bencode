@@ -82,14 +82,15 @@ class Dictionary implements Element, Buffer, Json
      * the key and value of the array.
      *
      * @param string $stream Encoded Dictionary
+     *
      * @throws \DSH\Bencode\Exception\DictionaryException
+     *
      * @return string the remainder of the stream, if anything
      */
     public function decode($stream)
     {
         $stream = $this->dropEncoding($stream, self::PATTERN);
 
-        // decide how to decode the stream
         if (!is_numeric($stream[0])) {
             throw new DictionaryException(
                 'Improper stream encoding: ' . $stream

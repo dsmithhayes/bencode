@@ -81,8 +81,8 @@ class Integer implements Element, Buffer
             unset($stream[$i]);
         }
 
-        for ($stack->rewind(); $stack->valid(); $stack->next()) {
-            $buffer .= $stack->current();
+        foreach ($stack as $s) {
+            $buffer .= $s;
         }
 
         $this->_buffer = $buffer;

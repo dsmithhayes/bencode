@@ -104,7 +104,7 @@ class Integer implements Element, Buffer
     public function read($value)
     {
         if (!is_numeric($value)) {
-            throw new IntegerException('reading from non-integer');
+            throw new IntegerException('Reading from non-integer');
         }
 
         $this->_buffer = intval($value);

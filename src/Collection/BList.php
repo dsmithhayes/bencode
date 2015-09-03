@@ -75,7 +75,7 @@ class BList implements Element, Buffer
         } elseif ($stream[0] === 'i') {
             $element = new Integer();
         } else {
-            throw new BListException('Improper encoding: ' . $stream);
+            throw new BListException('Decoded improper encoding: ' . $stream);
         }
 
         $stream = $element->decode($stream);

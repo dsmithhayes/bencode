@@ -104,7 +104,7 @@ class Byte implements Element, Buffer
      */
     public function read($value)
     {
-        $this->_buffer = $value;
+        $this->_buffer = strval($value);
     }
 
     /**

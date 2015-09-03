@@ -49,8 +49,8 @@ class Byte implements Element, Buffer
         $buffer = '';
         $size   = count($stream);
 
-        $sizeList   = new \SplDoublyLinkedList();
-        $bufList = new \SplDoublyLinkedList();
+        $sizeList = new \SplDoublyLinkedList();
+        $bufList  = new \SplDoublyLinkedList();
 
         // read the size of the byte from the stream
         for ($i = 0; $i < count($stream); $i++) {
@@ -66,9 +66,9 @@ class Byte implements Element, Buffer
         $stream = array_values($stream);
 
         $size = 0;
-
-        for ($sizeList->rewind(); $sizeList->valid(); $sizeList->next()) {
-            $size .= $sizeList->current();
+        
+        foreach ($sizeList as $sl) {
+            $size .= $sl;
         }
 
         // read the length of the byte from the stream
@@ -78,8 +78,8 @@ class Byte implements Element, Buffer
         }
 
         // read the byte into the buffer
-        for ($bufList->rewind(); $bufList->valid(); $bufList->next()) {
-            $buffer .= $bufList->current();
+        foreach ($bufList as $bl) {
+            $buffer .= $bl;
         }
 
         $this->_buffer = $buffer;

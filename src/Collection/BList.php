@@ -63,6 +63,7 @@ class BList implements Element, Buffer
      * of it. This will append data to the internal buffer.
      *
      * @param string A raw encoded stream of a Bencode List.
+     *
      * @throws \DSH\Bencode\Exception\BListException;
      */
     public function decode($stream)

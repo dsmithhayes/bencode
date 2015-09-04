@@ -2,6 +2,12 @@
 
 namespace DSH\Bencode\Core\Traits;
 
+/**
+ * Consider that every Element has a REGEX pattern that can be matched
+ * and that each Element object implements a PATTERN constant. This
+ * method is used only in the Collection Elements (List, Dictionary)
+ * due to their strict rules of being becoding.
+ */
 trait Pattern {
 
     /**

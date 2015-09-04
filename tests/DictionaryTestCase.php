@@ -57,4 +57,21 @@ class DictionaryTestCase extends PHPUnit_Framework_TestCase
 
         $dictionary->decode($stream);
     }
+    
+    /**
+     * Reads a Bencoded file and puts it into and array.
+     */
+    public function testReadingFile()
+    {
+        $stream = file_get_contents(__DIR__ . '/assets/test.be');
+        
+        if (substr($stream, -1) === "\n") {
+            $stream = substr($stream, 0, -1);
+        }
+        
+        $dictionary = new Dictionary();
+        $dictionary->decode($stream);
+        
+        $this->assertEquals($stream, $dictionary->encode());
+    }
 }

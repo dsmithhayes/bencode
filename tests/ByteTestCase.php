@@ -45,4 +45,10 @@ class ByteTestCase extends PHPUnit_Framework_TestCase
         $byte = new Byte('25');
         $this->assertEquals('2:25', $byte->encode());
     }
+    
+    public function testZeroIntStreamEncoding()
+    {
+        $byte = new Byte('0');
+        $this->assertEquals('1:0', $byte->encode());
+    }
 }

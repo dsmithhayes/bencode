@@ -65,9 +65,9 @@ class DictionaryTestCase extends PHPUnit_Framework_TestCase
     {
         $stream = file_get_contents(__DIR__ . '/assets/test.be');
         
-        if (substr($stream, -1) === "\n") {
-            $stream = substr($stream, 0, -1);
-        }
+        // you should always trim and opened file, in case of a
+        // newline character at the end, fucking some shit up
+        $stream = trim($stream);
         
         $dictionary = new Dictionary();
         $dictionary->decode($stream);

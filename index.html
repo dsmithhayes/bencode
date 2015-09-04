@@ -4,48 +4,159 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Bencode by dsmithhayes</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-dark.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/dsmithhayes/bencode">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/dsmithhayes/bencode/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/dsmithhayes/bencode/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
-
     <div class="wrapper">
+      <header>
+        <h1>Bencode</h1>
+        <p>PHP Bencode library.</p>
 
+        <p class="view"><a href="https://github.com/dsmithhayes/bencode">View the Project on GitHub <small>dsmithhayes/bencode</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/dsmithhayes/bencode/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/dsmithhayes/bencode/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/dsmithhayes/bencode">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
       <section>
-        <div id="title">
-          <h1>Bencode</h1>
-          <p>PHP Bencode library.</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/dsmithhayes">dsmithhayes</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
+        <h1>
+<a id="bencode" class="anchor" href="#bencode" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bencode</h1>
 
-        <h3>
-<a id="bencode" class="anchor" href="#bencode" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bencode</h3>
+<p>This is a library used for encoding and decoding bencoded streams. Bencoding
+is primarily found in the makeup of <code>.torrent</code> files.</p>
 
-<p>Bencode (Bee-Encode) is a basic binary encoding. This encoding is most commonly found in <code>.torrent</code> files.</p>
+<h2>
+<a id="bencoding-basics" class="anchor" href="#bencoding-basics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bencoding Basics</h2>
+
+<p>Pronounced bee-encoding, this language focuses on binary encoding with four
+basic element datastructures.</p>
+
+<ol>
+<li><code>Integer</code></li>
+<li><code>Byte</code></li>
+<li><code>List</code></li>
+<li><code>Dictionary</code></li>
+</ol>
+
+<p>The last two elements (<code>List</code>, <code>Dictionary</code>) are just collections of the
+first two elements.</p>
+
+<h3>
+<a id="integer" class="anchor" href="#integer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Integer</h3>
+
+<p>The Integer element is a positive or negative integer that is always
+prefixed with an <code>i</code>, and suffixed with an <code>e</code>.</p>
+
+<pre><code>i45e
+i-1e
+</code></pre>
+
+<h4>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h4>
+
+<pre><code>&lt;?php
+
+use DSH\Bencode\Integer;
+
+$int = new Integer(45);
+echo $int-&gt;encode();    // i45e
+
+$int-&gt;decode(i-445e);
+echo $int-&gt;write();     // -445
+</code></pre>
+
+<h3>
+<a id="byte" class="anchor" href="#byte" aria-hidden="true"><span class="octicon octicon-link"></span></a>Byte</h3>
+
+<p>Bytes are encoded with their size (in bytes), a <code>:</code> and then the sequence
+of bytes.</p>
+
+<pre><code>5:hello
+6:123456
+</code></pre>
+
+<p>Note that the second example will encode the character codes and not the
+binary value of the integers.</p>
+
+<h4>
+<a id="usage-1" class="anchor" href="#usage-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h4>
+
+<pre><code>&lt;?php
+
+use DSH\Bencode\Byte;
+
+$byte = new Byte('hello');
+echo $byte-&gt;encode();       // 5:hello
+
+$byte-&gt;decode('5:world');
+echo $byte-&gt;write();        // world
+</code></pre>
+
+<h3>
+<a id="list" class="anchor" href="#list" aria-hidden="true"><span class="octicon octicon-link"></span></a>List</h3>
+
+<p>A List is just that, a list of Byte and Integer elements. It has a siilar
+encoding as the Integer. The List is prefixed with <code>l</code> and suffixed with
+<code>e</code>. Within are encoded Bytes and integers.</p>
+
+<pre><code>li45e5:hello5:worldi-45e
+</code></pre>
+
+<h4>
+<a id="usage-2" class="anchor" href="#usage-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h4>
+
+<p>The class is named <code>BList</code> because <code>List</code> is a reserved keyword in PHP.</p>
+
+<pre><code>&lt;?php
+
+use DSH\Bencode\Collection\BList
+
+$list = new BList([45, 'hello', 'world', -45]);
+echo $list-&gt;encode();       // li45e5:hello5:worldi-45e
+
+$list-&gt;decode('li34e4:davee');
+print_r($list-&gt;write());     // [34, 'dave']
+</code></pre>
+
+<h3>
+<a id="dictionary" class="anchor" href="#dictionary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dictionary</h3>
+
+<p>Dictionaries are key-value lists of bytes. The first element in the list
+is the key, and the second is the value. The Dictionary is prefixed with
+a <code>d</code> and suffixed with an <code>e</code>.</p>
+
+<pre><code>d3:key5:valuee
+</code></pre>
+
+<h4>
+<a id="usage-3" class="anchor" href="#usage-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h4>
+
+<pre><code>&lt;?php
+
+use DSH\Bencode\Collection\Dictionary;
+
+$dictionary = new Dictionary(['key' =&gt; 'value']);
+echo $dictionary-&gt;encode();     // d3:key5:valuee
+
+$dictionary-&gt;decode('d3:new6:valuese');
+print_r($dictionary-&gt;write());  // ['new' =&gt; 'values']
+</code></pre>
       </section>
-
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/dsmithhayes">dsmithhayes</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    <script src="javascripts/scale.fix.js"></script>
     
   </body>
 </html>

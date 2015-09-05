@@ -11,11 +11,9 @@ use DSH\Bencode\Integer;
 use DSH\Bencode\Exception\DictionaryException;
 
 /**
- * The Dictionary class comes with some interesting rules. It is
- * basically a one-dimensional associative array to which each
- * key is a byte.
+ * The Dictionary class comes with some interesting rules. It is basically a
+ * one-dimensional associative array to which each key is a byte.
  */
-
 class Dictionary implements Element, Buffer, Json
 {
     /**
@@ -77,9 +75,9 @@ class Dictionary implements Element, Buffer, Json
     }
 
     /**
-     * Decoding a Dictionary is a lot like decoding a List, however
-     * we are looking for the firs two Elements and setting them as
-     * the key and value of the array.
+     * Decoding a Dictionary is a lot like decoding a List, however we are
+     * looking for the firs two Elements and setting them as the key and value
+     * of the array.
      *
      * @param string $stream Encoded Dictionary
      *
@@ -122,8 +120,8 @@ class Dictionary implements Element, Buffer, Json
     }
 
     /**
-     * Indexed arrays will have their indices encoded as Bytes,
-     * otherwise pass any array.
+     * Indexed arrays will have their indices encoded as Bytes, otherwise pass
+     * any array.
      *
      * @param array $value An array to become the Dictionary
      */

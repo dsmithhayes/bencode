@@ -11,13 +11,17 @@ namespace DSH\Bencode\Core\Traits;
 trait Pattern {
 
     /**
-     * Matches the stream to the Element's regex pattern, removed
-     * it from the stream.
+     * Matches the stream to the Element's regex pattern, removed it from the
+     * stream. For example, if you are decoding a List, you want to remove the
+     * `l` and `e` from the beginning and end of the list.
      *
-     * @param string $stream    The raw encoded stream
-     * @param string $pattern   The REGEX pattern of the element.
+     * Note that this method is a *fail-safe* implementation that will return
+     * the original stream value given.
      *
-     * @return string           The stream without the prefix and suffix.
+     * @param  string $stream    The raw encoded stream
+     * @param  string $pattern   The REGEX pattern of the element.
+     *
+     * @return string            If pattern matches, the stream sans encoding
      */
     public function dropEncoding($stream, $pattern)
     {

@@ -7,8 +7,8 @@ use DSH\Bencode\Core\Buffer;
 use DSH\Bencode\Exception\IntegerException;
 
 /**
- * An integer is encoded with an 'i' prefix and an 'e' suffix. A
- * good example would be: i45e, i-23e.
+ * An integer is encoded with an 'i' prefix and an 'e' suffix. A good example
+ * would be: i45e, i-23e.
  */
 class Integer implements Element, Buffer
 {
@@ -117,8 +117,8 @@ class Integer implements Element, Buffer
     }
 
     /**
-     * Hard choice, __toString() the encoded Integer or the
-     * raw buffer? I decided the encoded Integer.
+     * Hard choice, __toString() the encoded Integer or the raw buffer? I
+     * decided the encoded Integer.
      *
      * @return string The encoded integer.
      */

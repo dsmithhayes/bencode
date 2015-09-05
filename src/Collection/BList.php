@@ -36,8 +36,8 @@ class BList implements Element, Buffer
     }
 
     /**
-     * Takes the List object's buffer and returns an encoded stream
-     * that represents the byte.
+     * Takes the List object's buffer and returns an encoded stream that
+     * represents the byte.
      *
      * @return string Encoded Bencode list
      */
@@ -59,8 +59,8 @@ class BList implements Element, Buffer
     }
 
     /**
-     * Reads a raw stream and decodes the List encoded portion
-     * of it. This will append data to the internal buffer.
+     * Reads a raw stream and decodes the List encoded portion of it. This will
+     * append data to the internal buffer.
      *
      * @param string A raw encoded stream of a Bencode List.
      *
@@ -89,8 +89,8 @@ class BList implements Element, Buffer
     }
 
     /**
-     * Returns the raw buffer of the List object. In this case, its
-     * just and array of data.
+     * Returns the raw buffer of the List object. In this case, its just and
+     * array of data.
      *
      * @return array The raw buffer of the List object
      */
@@ -100,10 +100,9 @@ class BList implements Element, Buffer
     }
 
     /**
-     * Reads either an array to replace the buffer, or a value to
-     * become the buffer. Objects without a `__toString()` method
-     * may cause some problems. Integers can be passed as strings
-     * and encoded as Integer objects.
+     * Reads either an array to replace the buffer, or a value to become the
+     * buffer. Objects without a `__toString()` method may cause some problems.
+     * Integers can be passed as strings and encoded as Integer objects.
      *
      * @param array|string Array to replace
      */

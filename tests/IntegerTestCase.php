@@ -9,6 +9,12 @@ class IntegerTestCase extends PHPUnit_Framework_TestCase
         $integer = new Integer();
         $this->assertEquals(0, $integer->write());
     }
+    
+    public function testNullConstruction()
+    {
+        $integer = new Integer(null);
+        $this->assertEquals(0, $integer->write());
+    }
 
     public function testBasicConstruction()
     {

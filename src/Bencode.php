@@ -12,22 +12,30 @@ class Bencode
     /**
      * Returns an instance of an Integer.
      *
-     * @param integer  $int The value to store in the Integer buffer
-     * @param callable $cb  A callback function on the instantiated Integer.
+     * @param int|null      $int The value to store in the Integer buffer
+     * @param callable|null $cb  A callback function on the instantiated Integer
      *
      * @return \DSH\Bencode\Integer An Integer object
      */
     public static function integerFactory($int = null, callable $cb = null)
     {
-        $integer = new Integer($value);
+        $integer = new Integer($int);
         
         if ($cb) {
             $integer = $cb($integer);
         }
         
-        return $intger;
+        return $integer;
     }
     
+    /**
+     * Returns an instance of a Byte
+     *
+     * @param string|null   $byte The stream to represent a Byte
+     * @param callable|null $cb   A callback function on the instantiated Byte
+     *
+     * @return \DSH\Bencode\Byte A Byte object
+     */
     public static function byteFactory($byte = null, callable $cb = null)
     {
         $byte = new Byte($value);

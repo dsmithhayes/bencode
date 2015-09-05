@@ -27,7 +27,7 @@ class Integer implements Element, Buffer
      *
      * @throws \DSH\Bencode\Exception\IntegerException
      */
-    public function __construct($in = 0)
+    public function __construct($in = null)
     {
         $this->read($in);
     }
@@ -109,8 +109,12 @@ class Integer implements Element, Buffer
      */
     public function read($value)
     {
+        if (is_null($value)) {
+            $value = 0;
+        }
+        
         if (!is_numeric($value)) {
-            throw new IntegerException('Reading from non-integer');
+            throw new IntegerException('Reading from non-integer: ' . $value);
         }
 
         $this->_buffer = intval($value);

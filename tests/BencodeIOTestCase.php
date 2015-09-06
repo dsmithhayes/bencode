@@ -20,13 +20,24 @@ class BencodeIOTestCase extends PHPUnit_Framework_TestCase
     
     public function testBasicFileWriting()
     {
-        $blist = Bencode::dictionaryFactory(function () {
+        $dictionary = Bencode::dictionaryFactory(function () {
             return ['write' => 'this', 'to' => 'file'];
         });
         
         $file = __DIR__ . '/assets/dictionary.be';
-        $res = file_put_contents($file, $blist->encode());
+        $res = file_put_contents($file, $dictionary->encode());
         
         $this->assertNotEquals(0, $res);
+    }
+    
+    public function testClosureFileOpen()
+    {
+        $dictionary = Bencode::dictionaryFactory(function () {
+            return file_get_contents(__DIR__ . '/assets/dictionary.be');
+        }, true);
+        
+        $stream = file_get_contents(__DIR__ . '/assets/dictionary.be');
+        
+        $this->assertEquals($stream, $dictionary->encode());
     }
 }

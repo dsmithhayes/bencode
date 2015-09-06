@@ -63,11 +63,9 @@ class DictionaryTestCase extends PHPUnit_Framework_TestCase
      */
     public function testReadingFile()
     {
-        $stream = file_get_contents(__DIR__ . '/assets/test.be');
-        
         // you should always trim and opened file, in case of a
         // newline character at the end, fucking some shit up
-        $stream = trim($stream);
+        $stream = trim(file_get_contents(__DIR__ . '/assets/test.be'));
         
         $dictionary = new Dictionary();
         $dictionary->decode($stream);

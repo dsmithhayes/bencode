@@ -7,23 +7,27 @@ use DSH\Bencode\Byte;
 use DSH\Bencode\Collection\BList;
 use DSH\Bencode\Collection\Dictionary;
 
+/**
+ * Each Factory in this object can create an instance of the Element you
+ * would want. You can pass either a raw-buffer value (integers for Integer,
+ * strings for Bytes, etc) or build a closure that returns a value that can
+ * be used as a buffer for the Element.
+ */
 class Bencode
 {
     /**
      * Returns an instance of an Integer.
      *
-     * @param int|null      $int The value to store in the Integer buffer
-     * @param callable|null $cb  A callback function on the instantiated Integer
-     *
-     * @return \DSH\Bencode\Integer An Integer object
+     * @param mixed $value Integer or closure
+     * @return \DSH\Bencode\Integer
      */
-    public static function integerFactory($int = null, callable $cb = null)
+    public static function integerFactory($value = null)
     {
-        $integer = new Integer($int);
-        
-        if ($cb) {
-            $integer = $cb($integer);
+        if (is_callable($value)) {
+            $value = $value();
         }
+        
+        $integer = new Integer($value);
         
         return $integer;
     }
@@ -31,40 +35,50 @@ class Bencode
     /**
      * Returns an instance of a Byte
      *
-     * @param string|null   $byte The stream to represent a Byte
-     * @param callable|null $cb   A callback function on the instantiated Byte
-     *
-     * @return \DSH\Bencode\Byte A Byte object
+     * @param mixed $value String or closure
+     * @return \DSH\Bencode\Byte
      */
-    public static function byteFactory($byte = null, callable $cb = null)
+    public static function byteFactory($value = null)
     {
-        $byte = new Byte($value);
-        
-        if ($cb) {
-            $byte = $cb($byte);
+        if (is_callable($value)) {
+            $value = $value();
         }
+        
+        $byte = new Byte($value);
         
         return $byte;
     }
     
-    public static function blistFactory($blist = null, callable $cb = null)
+    /**
+     * Returns an instance of a BList element.
+     *
+     * @param mixed|null $value A value, array, or closure
+     * @return \DSH\Bencode\Collection\BList
+     */
+    public static function blistFactory($value = null)
     {
-        $blist = new BList($blist);
-        
-        if ($cb) {
-            $blist = $cb($blist);
+        if (is_callable($value)) {
+            $value = $value();
         }
+        
+        $blist = new BList($value);
         
         return $blist;
     }
     
-    public static function dictionaryFactory($dict = null, callable $cb = null)
+    /**
+     * Returns an instance of a Dictionary element.
+     *
+     * @param mixed|null $value A value, array, or closure
+     * @return \DSH\Bencode\Collection\Dictionary
+     */
+    public static function dictionaryFactory($value = null)
     {
-        $dictionary = new Dictionary($dict);
-        
-        if ($cb) {
-            $dictionary = $cb($dictionary);
+        if (is_callable($value)) {
+            $value = $value();
         }
+        
+        $dictionary = new Dictionary($value);
         
         return $dictionary;
     }

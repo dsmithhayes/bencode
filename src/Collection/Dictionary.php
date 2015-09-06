@@ -127,6 +127,10 @@ class Dictionary implements Element, Buffer, Json
      */
     public function read($value)
     {
+        if (is_null($value)) {
+            $value = [];
+        }
+        
         if (!is_array($value)) {
             throw new DictionaryException('Reading to buffer from non-array');
         }

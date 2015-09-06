@@ -110,6 +110,8 @@ class BList implements Element, Buffer
     {
         if (is_array($value)) {
             $this->_buffer = $value;
+        } elseif (is_null($value)) {
+            $this->_buffer = [];
         } else {
             $this->_buffer[] = strval($value);
         }

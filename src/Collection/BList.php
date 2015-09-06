@@ -70,12 +70,11 @@ class BList implements Element, Buffer
     {
         $stream = $this->dropEncoding($stream, self::PATTERN);
 
-        // This block determines which type of primitive element is
-        // in the list
-        if (is_numeric($stream[0])) {
-            $element = new Byte();
-        } elseif ($stream[0] === 'i') {
+        // This block determines which type of primitive element is in the list
+        if ($stream[0] === 'i') {
             $element = new Integer();
+        } elseif (is_numeric($stream[0])) {
+            $element = new Byte();
         } else {
             throw new BListException('Decoded improper encoding: ' . $stream);
         }

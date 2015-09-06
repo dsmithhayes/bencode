@@ -6,6 +6,7 @@ use DSH\Bencode\Integer;
 use DSH\Bencode\Byte;
 use DSH\Bencode\Collection\BList;
 use DSH\Bencode\Collection\Dictionary;
+use DSH\Bencode\Core\Traits\FactoryBuild;
 
 /**
  * Each Factory in this object can create an instance of the Element you
@@ -15,71 +16,77 @@ use DSH\Bencode\Collection\Dictionary;
  */
 class Bencode
 {
+    use FactoryBuild;
+    
     /**
      * Returns an instance of an Integer.
      *
-     * @param mixed $value Integer or closure
+     * @param mixed   $value  Integer or closure
+     * @param boolean $decode If true, uses `decode` method from Element
      * @return \DSH\Bencode\Integer
      */
-    public static function integerFactory($value = null)
+    public static function integerFactory($value = null, $decode = false)
     {
         if (is_callable($value)) {
             $value = $value();
         }
         
-        $integer = new Integer($value);
+        $integer = new Integer();
         
-        return $integer;
+        return self::decodeOrRead($integer, $value, $decode);
     }
     
     /**
      * Returns an instance of a Byte
      *
-     * @param mixed $value String or closure
+     * @param mixed|null $value  String or closure
+     * @param boolean    $decode If true, uses `decode` method from Element
      * @return \DSH\Bencode\Byte
      */
-    public static function byteFactory($value = null)
+    public static function byteFactory($value = null, $decode = false)
     {
         if (is_callable($value)) {
             $value = $value();
         }
         
-        $byte = new Byte($value);
+        $byte = new Byte();
         
-        return $byte;
+        return self::decodeOrRead($byte, $value, $decode);
     }
     
     /**
      * Returns an instance of a BList element.
      *
-     * @param mixed|null $value A value, array, or closure
+     * @param mixed|null $value  A value, array, or closure
+     * @param boolean    $decode If true, uses `decode` method from Element
      * @return \DSH\Bencode\Collection\BList
      */
-    public static function blistFactory($value = null)
+    public static function blistFactory($value = null, $decode = false)
     {
         if (is_callable($value)) {
             $value = $value();
         }
         
-        $blist = new BList($value);
+        $blist = new BList();
         
-        return $blist;
+        return self::decodeOrRead($blist, $value, $decode);
     }
     
     /**
      * Returns an instance of a Dictionary element.
      *
-     * @param mixed|null $value A value, array, or closure
+     * @param mixed|null $value  A value, array, or closure
+     * @param boolean    $decode If true, uses `decode` method from Element
      * @return \DSH\Bencode\Collection\Dictionary
      */
-    public static function dictionaryFactory($value = null)
+    public static function dictionaryFactory($value = null, $decode = false)
     {
         if (is_callable($value)) {
             $value = $value();
         }
         
-        $dictionary = new Dictionary($value);
+        $dictionary = new Dictionary();
         
-        return $dictionary;
+        return self::decodeOrRead($dictionary, $value, $decode);
     }
 }

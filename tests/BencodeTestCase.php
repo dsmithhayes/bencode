@@ -60,7 +60,7 @@ class BencodeTestCase extends PHPUnit_Framework_TestCase
             return $a;
         });
         
-        $this->assertEquals("fizz", $blist->write()[2]);
+        $this->assertEquals('fizz', $blist->write()[2]);
     }
     
     public function testDictionaryFactory()
@@ -76,5 +76,12 @@ class BencodeTestCase extends PHPUnit_Framework_TestCase
         });
         
         $this->assertEquals('d3:key5:valuee', $dictionary->encode());
+    }
+    
+    public function testDictionaryEncodedFactory()
+    {
+        $dictionary = Bencode::dictionaryFactory('d3:key5:valuee', true);
+        
+        $this->assertEquals('value', $dictionary->write()['key']);
     }
 }

@@ -33,10 +33,10 @@ class BencodeIOTestCase extends PHPUnit_Framework_TestCase
     public function testClosureFileOpen()
     {
         $dictionary = Bencode::dictionaryFactory(function () {
-            return file_get_contents(__DIR__ . '/assets/dictionary.be');
+            return trim(file_get_contents(__DIR__ . '/assets/dictionary.be'));
         }, true);
         
-        $stream = file_get_contents(__DIR__ . '/assets/dictionary.be');
+        $stream = trim(file_get_contents(__DIR__ . '/assets/dictionary.be'));
         
         $this->assertEquals($stream, $dictionary->encode());
     }

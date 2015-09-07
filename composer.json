@@ -1,6 +1,6 @@
 {
     "name": "dsmithhayes/bencode",
-    "description": "A simple bencode library for PHP.",
+    "description": "A simple bencoding library for PHP.",
     "homepage": "https://github.com/dsmithhayes/bencode",
     "type": "Library",
     "version": "v0.1.0",

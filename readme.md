@@ -89,6 +89,10 @@ a `d` and suffixed with an `e`.
 
     d3:key5:valuee
 
+You can also use elements as values in the list.
+
+    d3:keyli3ei5eee
+
 #### Usage
 
     <?php

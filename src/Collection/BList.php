@@ -63,8 +63,8 @@ class BList implements Element, Buffer
      * append data to the internal buffer.
      *
      * @param string A raw encoded stream of a Bencode List.
-     *
-     * @throws \DSH\Bencode\Exception\BListException;
+     * 
+     * @throws BListException;
      */
     public function decode($stream)
     {
@@ -109,7 +109,7 @@ class BList implements Element, Buffer
     {
         if (is_array($value)) {
             $this->_buffer = $value;
-        } elseif (is_null($value)) {
+        } elseif (is_null($value)) {        // fail-safe
             $this->_buffer = [];
         } else {
             $this->_buffer[] = strval($value);

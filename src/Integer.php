@@ -105,7 +105,7 @@ class Integer implements Element, Buffer
      *
      * @param int $value An integer to store in the buffer.
      *
-     * @throws \DSH\Bencode\Exceptions\IntegerException
+     * @throws IntegerException
      */
     public function read($value)
     {

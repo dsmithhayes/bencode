@@ -54,13 +54,14 @@ class Byte implements Element, Buffer
 
         // read the size of the byte from the stream
         for ($i = 0; $i < count($stream); $i++) {
-            if ($stream[$i] === ':') {
-                unset($stream[$i]);
+            $temp = $stream[$i];
+            unset($stream[$i]);
+            
+            if ($temp === ':') {
                 break;
             }
 
-            $sizeList->push($stream[$i]);
-            unset($stream[$i]);
+            $sizeList->push($temp);
         }
 
         $stream = array_values($stream);
@@ -100,7 +101,7 @@ class Byte implements Element, Buffer
     /**
      * Reads a raw byte and stores it in the buffer.
      *
-     * @param stream $value A raw byte.
+     * @param string $value A raw byte.
      */
     public function read($value)
     {

@@ -32,16 +32,6 @@ class Dictionary implements Element, Buffer, Json
     protected $_buffer;
 
     /**
-     * @var \DSH\Bencode\Byte
-     */
-    private $_key;
-
-    /**
-     * @var \DSH\Bencode\Byte
-     */
-    private $_value;
-
-    /**
      * Initialize with an array or empty. What ever.
      *
      * @param array $buffer the array to become the buffer
@@ -49,8 +39,6 @@ class Dictionary implements Element, Buffer, Json
     public function __construct($buffer = [])
     {
         $this->read($buffer);
-        $this->_key = new Byte();
-        $this->_value = new Byte();
     }
 
     /**
@@ -61,12 +49,33 @@ class Dictionary implements Element, Buffer, Json
     public function encode()
     {
         $buffer = 'd';
-
-        foreach ($this->_buffer as $key => $val) {
-            $this->_key->read($key);
-            $this->_value->read($val);
-
-            $buffer .= ($this->_key->encode() . $this->_value->encode());
+        
+        foreach ($this->_buffer as $k => $v) {
+            $key = new Byte();
+            
+            $key->read($k);
+            
+            if (is_array($v)) {
+                $dictionary = false;
+                
+                foreach (array_keys($v) as $ak) {
+                    if (!is_numeric($ak)) {
+                        $dictionary = true;
+                    }
+                }
+                
+                if ($dictionary) {
+                    $value = new Dictionary();
+                } else {
+                    $value = new BList();
+                }
+            } else {
+                $value = new Byte();
+            }
+            
+            $value->read($v);
+            
+            $buffer .= ($key->encode() . $value->encode());
         }
 
         $buffer .= 'e';
@@ -78,34 +87,50 @@ class Dictionary implements Element, Buffer, Json
      * Decoding a Dictionary is a lot like decoding a List, however we are
      * looking for the firs two Elements and setting them as the key and value
      * of the array.
-     *
+     * 
+     * A key must be an encoded byte, however the value can be any of the other
+     * elements, such as an Integer, List or another Dictionary.
+     * 
      * @param string $stream Encoded Dictionary
-     *
-     * @throws \DSH\Bencode\Exception\DictionaryException
-     *
+     * 
      * @return string the remainder of the stream, if anything
      */
     public function decode($stream)
     {
         $stream = $this->dropEncoding($stream, self::PATTERN);
-
+        
         if (!is_numeric($stream[0])) {
             throw new DictionaryException(
-                'Improper stream encoding: ' . $stream
+                'Invalid dictionary encoding: ' . $stream
             );
         }
-
-        // read the stream into a key and value, each are Byte objects
-        $stream = $this->_key->decode($stream);
-        $stream = $this->_value->decode($stream);
-
+        
+        $key = new Byte();
+        
+        // always read the key first, then onto the value
+        $stream = $key->decode($stream);
+        
+        if (is_numeric($stream[0])) {
+            $value = new Byte();
+        } elseif ($stream[0] === 'l') {
+            $value = new BList();
+        } elseif ($stream[0] === 'd') {
+            $value = new Dictionary();
+        } else {
+            throw new DictionaryException(
+                'Improper dictionary encoding: ' . $stream
+            );
+        }
+        
+        $stream = $value->decode($stream);
+        
         // assign the key and value.
-        $this->_buffer[$this->_key->write()] = $this->_value->write();
-
+        $this->_buffer[$key->write()] = $value->write();
+        
         if (strlen($stream) > 0) {
             return $this->decode($stream);
         }
-
+        
         return $stream;
     }
 
@@ -120,10 +145,12 @@ class Dictionary implements Element, Buffer, Json
     }
 
     /**
-     * Indexed arrays will have their indices encoded as Bytes, otherwise pass
-     * any array.
+     * Reading will place the array into the internal buffer. Indexed arrays
+     * will have their indices encoded as Bytes.
      *
      * @param array $value An array to become the Dictionary
+     *
+     * @throws DictionaryException
      */
     public function read($value)
     {
@@ -134,8 +161,7 @@ class Dictionary implements Element, Buffer, Json
         if (!is_array($value)) {
             throw new DictionaryException('Reading to buffer from non-array');
         }
-
-        // set as the buffer
+        
         $this->_buffer = $value;
     }
 

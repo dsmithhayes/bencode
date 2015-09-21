@@ -14,11 +14,11 @@ trait FactoryBuild
     /**
      * Determines if the Element should `read` or `decode` the value.
      *
-     * @param  \DSH\Bencode\Core\Element $element The Element object
-     * @param  mixed                     $value   The value to put in the Object
-     * @param  boolean                   $decode  True to `decode`, false to
-     *                                           `read`
-     * @return \DSH\Bencode\Core\Element
+     * @param  Element  $element    The Element object
+     * @param  mixed    $value      The value to put in the Object
+     * @param  boolean  $decode     True to `decode`, false to `read`
+     * 
+     * @return Element  An Element object representing the value
      */
     public function decodeOrRead($element, $value, $decode)
     {

@@ -63,13 +63,33 @@ class DictionaryTestCase extends PHPUnit_Framework_TestCase
      */
     public function testReadingFile()
     {
-        // you should always trim and opened file, in case of a
-        // newline character at the end, fucking some shit up
+        // you should always trim an opened file, in case of a newline character
+        // at the end, fucking some shit up
         $stream = trim(file_get_contents(__DIR__ . '/assets/dictionary.be'));
         
         $dictionary = new Dictionary();
         $dictionary->decode($stream);
         
         $this->assertEquals($stream, $dictionary->encode());
+    }
+    
+    public function testListAsValue()
+    {
+        $buffer = ['key' => [1, 2, 3]];
+        $encoded = 'd3:keyli1ei2ei3eee';
+        
+        $dictionary = new Dictionary($buffer);
+        
+        $this->assertEquals($encoded, $dictionary->encode());
+    }
+    
+    public function testDictionaryAsValue()
+    {
+        $buffer = ['key' => ['key2' => 'value']];
+        $encoded = 'd3:keyd4:key25:valueee';
+        
+        $dictionary = new Dictionary($buffer);
+        
+        $this->assertEquals($encoded, $dictionar->encode());
     }
 }

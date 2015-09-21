@@ -18,10 +18,10 @@ trait Pattern {
      * Note that this method is a *fail-safe* implementation that will return
      * the original stream value given.
      *
-     * @param  string $stream    The raw encoded stream
-     * @param  string $pattern   The REGEX pattern of the element.
+     * @param  string   $stream    The raw encoded stream
+     * @param  string   $pattern   The REGEX pattern of the element.
      *
-     * @return string            If pattern matches, the stream sans encoding
+     * @return string   If pattern matches, the stream sans encoding
      */
     public function dropEncoding($stream, $pattern)
     {

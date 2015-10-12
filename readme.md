@@ -5,8 +5,8 @@ is primarily found in the makeup of `.torrent` files.
 
 ## Bencoding Basics
 
-Pronounced bee-encoding, this language focuses on binary encoding with four
-basic element datastructures.
+Pronounced bee-encoding, this encoding focuses on binary encoding with four
+basic element data structures.
 
 1. `Integer`
 2. `Byte`

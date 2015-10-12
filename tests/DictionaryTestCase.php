@@ -90,6 +90,6 @@ class DictionaryTestCase extends PHPUnit_Framework_TestCase
         
         $dictionary = new Dictionary($buffer);
         
-        $this->assertEquals($encoded, $dictionar->encode());
+        $this->assertEquals($encoded, $dictionary->encode());
     }
 }

@@ -44,16 +44,11 @@ class BencodeIOTestCase extends PHPUnit_Framework_TestCase
     public function testOpenTorrentFile()
     {
         $file = __DIR__ . '/assets/test.torrent';
-        $fh = fopen($file, "r");
+        $torrent = file_get_contents($file);
         
-        $dictionary = Bencode::dictionaryFactory(function() use ($fh, $file) {
-            $torrent = trim(fread($fh, filesize($file)));
+        $dictionary = Bencode::dictionaryFactory(function() use ($torrent) {
             return $torrent;
         }, true);
-        
-        fclose($fh);
-        
-        $torrent = file_get_contents($file);
         
         $this->assertEquals($torrent, $dictionary->encode());
     }

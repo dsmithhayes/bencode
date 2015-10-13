@@ -47,9 +47,7 @@ class BencodeIOTestCase extends PHPUnit_Framework_TestCase
             $file = __DIR__ . '/assets/test.torrent';
             $fh = fopen($file, "r");
             
-            $torrent = fread($fh, filesize($file));
-            $torrent = addslashes($torrent);
-            //$torrent = mb_convert_encoding($torrent, "ISO-8859-1");
+            $torrent = trim(fread($fh, filesize($file)));
             
             fclose($fh);
             

@@ -101,35 +101,62 @@ class Dictionary implements Element, Buffer, Json
     {
         $stream = $this->dropEncoding($stream, self::PATTERN);
         
-        if (!is_numeric($stream[0])) {
+        if (is_numeric($stream[0])) {
+            $key = new Byte();
+        } elseif ($stream[0] === 'i') {
+            $key = new Integer();
+        } else {
             throw new DictionaryException(
-                'Invalid dictionary encoding: ' . $stream
+                'Improper dictionary key encoding: ' . $stream
             );
         }
-        
-        $key = new Byte();
         
         // always read the key first, then onto the value
         $stream = $key->decode($stream);
         
         if (is_numeric($stream[0])) {
             $value = new Byte();
+        } elseif ($stream[0] === 'i') {
+            $value = new Integer();
         } elseif ($stream[0] === 'l') {
             $value = new BList();
         } elseif ($stream[0] === 'd') {
             $value = new Dictionary();
         } else {
             throw new DictionaryException(
-                'Improper dictionary encoding: ' . $stream
+                'Improper dictionary value encoding: ' . $stream
             );
         }
         
         $stream = $value->decode($stream);
         
+        /* DEBUG
+        echo "\n\n";
+        
+        echo "Key: ";
+        var_dump($key->write());
+        
+        echo "Value: ";
+        var_dump($value->write());
+        
+        echo "\nStream: ";
+        var_dump($stream);
+        
+        echo "\nBuffer:";
+        
+        
+        echo "\n\n";
+        */
+        
         // assign the key and value.
         $this->_buffer[$key->write()] = $value->write();
         
+        //echo "Buffer: ";
+        //var_dump($this->_buffer);
+        //echo "\n\n";
+        
         if (strlen($stream) > 0) {
+            //echo "Stream: " . $stream . "\n\n";
             return $this->decode($stream);
         }
         

@@ -53,5 +53,8 @@ class BencodeIOTestCase extends PHPUnit_Framework_TestCase
         
         fclose($fh);
         
+        $torrent = file_get_contents($file);
+        
+        $this->assertEquals($torrent, $dictionary->encode());
     }
 }

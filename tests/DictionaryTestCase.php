@@ -35,28 +35,6 @@ class DictionaryTestCase extends PHPUnit_Framework_TestCase
         $dictionary = new Dictionary($buffer);
         $this->assertEquals($stream, $dictionary->encode());
     }
-
-    /**
-     * @expectedException \DSH\Bencode\Exception\DictionaryException
-     */
-    public function testImproperEncoding()
-    {
-        $dictionary = new Dictionary();
-        $stream = 'd3:key4:valueel';
-
-        $dictionary->decode($stream);
-    }
-
-    /**
-     * @expectedException \DSH\Bencode\Exception\DictionaryException
-     */
-    public function testImproperByteEncoding()
-    {
-        $dictionary = new Dictionary();
-        $stream = 'd3:key4:valuee';
-
-        $dictionary->decode($stream);
-    }
     
     /**
      * Reads a Bencoded file and puts it into and array.

@@ -106,9 +106,12 @@ class Dictionary implements Element, Buffer, Json
         } elseif ($stream[0] === 'i') {
             $key = new Integer();
         } else {
+            return $stream;
+            /*
             throw new DictionaryException(
                 'Improper dictionary key encoding: ' . $stream
             );
+            */
         }
         
         // always read the key first, then onto the value

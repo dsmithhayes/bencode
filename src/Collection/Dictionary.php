@@ -69,7 +69,7 @@ class Dictionary implements Element, Buffer, Json
                 } else {
                     $value = new BList();
                 }
-            } elseif ($v[0] === 'i') {
+            } elseif (is_numeric($v)) {
                 $value = new Integer();
             } else {
                 $value = new Byte();

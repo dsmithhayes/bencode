@@ -73,6 +73,16 @@ class DictionaryTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals($stream, $dictionary->encode());
     }
     
+    public function testIntegerAsValue()
+    {
+        $buffer = ['key' => 25];
+        $encoded = 'd3:keyi25ee';
+        
+        $dictionary = new Dictionary($buffer);
+        
+        $this->assertEquals($encoded, $dictionary->encode());
+    }
+    
     public function testListAsValue()
     {
         $buffer = ['key' => [1, 2, 3]];

@@ -1,6 +1,6 @@
 <?php
 
-use DSH\Bencode\Collection\Dictionary;
+use Bencode\Collection\Dictionary;
 
 class DictionaryTestCase extends PHPUnit_Framework_TestCase
 {

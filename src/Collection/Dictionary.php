@@ -1,14 +1,14 @@
 <?php
 
-namespace DSH\Bencode\Collection;
+namespace Bencode\Collection;
 
-use DSH\Bencode\Core\Element;
-use DSH\Bencode\Core\Buffer;
-use DSH\Bencode\Core\Json;
-use DSH\Bencode\Core\Traits\Pattern;
-use DSH\Bencode\Byte;
-use DSH\Bencode\Integer;
-use DSH\Bencode\Exception\DictionaryException;
+use Bencode\Core\Element;
+use Bencode\Core\Buffer;
+use Bencode\Core\Json;
+use Bencode\Core\Traits\Pattern;
+use Bencode\Byte;
+use Bencode\Integer;
+use Bencode\Exception\DictionaryException;
 
 /**
  * The Dictionary class comes with some interesting rules. It is basically a

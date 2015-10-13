@@ -1,6 +1,6 @@
 <?php
 
-namespace DSH\Bencode\Exception;
+namespace Bencode\Exception;
 
 /**
  * The BListException class. Its an alias really. Maybe I'll give it and error

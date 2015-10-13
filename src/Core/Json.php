@@ -1,6 +1,6 @@
 <?php
 
-namespace DSH\Bencode\Core;
+namespace Bencode\Core;
 
 /**
  * Used with the Collection type Elements, this will return a JSON enocded

@@ -1,5 +1,5 @@
 <?php
 
-namespace DSH\Bencode\Exception;
+namespace Bencode\Exception;
 
 class IntegerException extends \Exception { }

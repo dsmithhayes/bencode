@@ -1,6 +1,6 @@
 <?php
 
-namespace DSH\Bencode\Core;
+namespace Bencode\Core;
 
 interface Element
 {

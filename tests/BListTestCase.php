@@ -1,6 +1,6 @@
 <?php
 
-use DSH\Bencode\Collection\BList;
+use Bencode\Collection\BList;
 
 class BListTestCase extends PHPUnit_Framework_TestCase
 {
@@ -68,7 +68,7 @@ class BListTestCase extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \DSH\Bencode\Exception\BListException
+     * @expectedException \Bencode\Exception\BListException
      */
     public function testBListException()
     {

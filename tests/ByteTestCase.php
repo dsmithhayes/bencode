@@ -1,6 +1,6 @@
 <?php
 
-use DSH\Bencode\Byte;
+use Bencode\Byte;
 
 class ByteTestCase extends PHPUnit_Framework_TestCase
 {

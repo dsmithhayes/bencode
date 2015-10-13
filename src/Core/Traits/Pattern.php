@@ -1,6 +1,6 @@
 <?php
 
-namespace DSH\Bencode\Core\Traits;
+namespace Bencode\Core\Traits;
 
 /**
  * Consider that every Element has a REGEX pattern that can be matched

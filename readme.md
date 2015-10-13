@@ -28,7 +28,7 @@ prefixed with an `i`, and suffixed with an `e`.
 
     <?php
     
-    use DSH\Bencode\Integer;
+    use Bencode\Integer;
     
     $int = new Integer(45);
     echo $int->encode();    // i45e
@@ -51,7 +51,7 @@ binary value of the integers.
 
     <?php
     
-    use DSH\Bencode\Byte;
+    use Bencode\Byte;
     
     $byte = new Byte('hello');
     echo $byte->encode();       // 5:hello
@@ -73,7 +73,7 @@ The class is named `BList` because `List` is a reserved keyword in PHP.
 
     <?php
     
-    use DSH\Bencode\Collection\BList
+    use Bencode\Collection\BList
     
     $list = new BList([45, 'hello', 'world', -45]);
     echo $list->encode();       // li45e5:hello5:worldi-45e
@@ -83,21 +83,22 @@ The class is named `BList` because `List` is a reserved keyword in PHP.
 
 ### Dictionary
 
-Dictionaries are key-value lists of bytes. The first element in the list
-is the key, and the second is the value. The Dictionary is prefixed with
-a `d` and suffixed with an `e`.
+Dictionaries are key-value lists. The first element in the list is the key, and
+the second is the value. The Dictionary is prefixed with a `d` and suffixed with
+an `e`.
 
     d3:key5:valuee
 
 You can also use elements as values in the list.
 
     d3:keyli3ei5eee
+    d3:keyd3:key5:valueee
 
 #### Usage
 
     <?php
     
-    use DSH\Bencode\Collection\Dictionary;
+    use Bencode\Collection\Dictionary;
 
     $dictionary = new Dictionary(['key' => 'value']);
     echo $dictionary->encode();     // d3:key5:valuee
@@ -105,3 +106,18 @@ You can also use elements as values in the list.
     $dictionary->decode('d3:new6:valuese');
     print_r($dictionary->write());  // ['new' => 'values']
 
+Dictionaries are what your `.torrent` files are encoded with. You can easily
+build objects to manipulate data of a torrent file.
+
+    <?php
+    
+    use Bencode\Collection\Dictionary;
+    
+    $dictionary = new Dictionary();
+    $torrent = file_get_contents('example.torrent');
+    
+    $ditionary->decode($torrent);
+    
+    $buffer = $dictionary->write();
+    
+    echo $buffer['comment'];

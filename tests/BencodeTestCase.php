@@ -1,6 +1,6 @@
 <?php
 
-use DSH\Bencode\Bencode;
+use Bencode\Bencode;
 
 class BencodeTestCase extends PHPUnit_Framework_TestCase
 {

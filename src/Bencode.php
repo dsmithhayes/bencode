@@ -1,12 +1,12 @@
 <?php
 
-namespace DSH\Bencode;
+namespace Bencode;
 
-use DSH\Bencode\Integer;
-use DSH\Bencode\Byte;
-use DSH\Bencode\Collection\BList;
-use DSH\Bencode\Collection\Dictionary;
-use DSH\Bencode\Core\Traits\FactoryBuild;
+use Bencode\Integer;
+use Bencode\Byte;
+use Bencode\Collection\BList;
+use Bencode\Collection\Dictionary;
+use Bencode\Core\Traits\FactoryBuild;
 
 /**
  * Each Factory in this object can create an instance of the Element you
@@ -23,7 +23,7 @@ class Bencode
      *
      * @param mixed   $value  Integer or closure
      * @param boolean $decode If true, uses `decode` method from Element
-     * @return \DSH\Bencode\Integer
+     * @return \Bencode\Integer
      */
     public static function integerFactory($value = null, $decode = false)
     {
@@ -41,7 +41,7 @@ class Bencode
      *
      * @param mixed|null $value  String or closure
      * @param boolean    $decode If true, uses `decode` method from Element
-     * @return \DSH\Bencode\Byte
+     * @return \Bencode\Byte
      */
     public static function byteFactory($value = null, $decode = false)
     {
@@ -77,7 +77,7 @@ class Bencode
      *
      * @param mixed|null $value  A value, array, or closure
      * @param boolean    $decode If true, uses `decode` method from Element
-     * @return \DSH\Bencode\Collection\Dictionary
+     * @return \Bencode\Collection\Dictionary
      */
     public static function dictionaryFactory($value = null, $decode = false)
     {

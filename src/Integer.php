@@ -1,10 +1,10 @@
 <?php
 
-namespace DSH\Bencode;
+namespace Bencode;
 
-use DSH\Bencode\Core\Element;
-use DSH\Bencode\Core\Buffer;
-use DSH\Bencode\Exception\IntegerException;
+use Bencode\Core\Element;
+use Bencode\Core\Buffer;
+use Bencode\Exception\IntegerException;
 
 /**
  * An integer is encoded with an 'i' prefix and an 'e' suffix. A good example
@@ -25,7 +25,7 @@ class Integer implements Element, Buffer
     /**
      * @param int $in An integer value to be represented.
      *
-     * @throws \DSH\Bencode\Exception\IntegerException
+     * @throws Bencode\Exception\IntegerException
      */
     public function __construct($in = null)
     {
@@ -50,7 +50,7 @@ class Integer implements Element, Buffer
      *
      * @param string $stream Reads the stream into the buffer.
      *
-     * @throws \DSH\Bencode\Exceptions\IntegerException
+     * @throws Bencode\Exceptions\IntegerException
      */
     public function decode($stream)
     {

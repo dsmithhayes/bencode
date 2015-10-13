@@ -1,10 +1,10 @@
 <?php
 
-namespace DSH\Bencode;
+namespace Bencode;
 
-use DSH\Bencode\Core\Element;
-use DSH\Bencode\Core\Buffer;
-use DSH\Bencode\Exception\ByteException;
+use Bencode\Core\Element;
+use Bencode\Core\Buffer;
+use Bencode\Exception\ByteException;
 
 class Byte implements Element, Buffer
 {

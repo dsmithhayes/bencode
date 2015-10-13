@@ -1,6 +1,6 @@
 <?php
 
-namespace DSH\Bencode\Core\Traits;
+namespace Bencode\Core\Traits;
 
 /**
  * Primarily used in the Bencode factory object, this Trait defines a method

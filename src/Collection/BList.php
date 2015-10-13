@@ -1,14 +1,14 @@
 <?php
 
-namespace DSH\Bencode\Collection;
+namespace Bencode\Collection;
 
-use DSH\Bencode\Core\Element;
-use DSH\Bencode\Core\Buffer;
-use DSH\Bencode\Core\Json;
-use DSH\Bencode\Core\Traits\Pattern;
-use DSH\Bencode\Integer;
-use DSH\Bencode\Byte;
-use DSH\Bencode\Exception\BListException;
+use Bencode\Core\Element;
+use Bencode\Core\Buffer;
+use Bencode\Core\Json;
+use Bencode\Core\Traits\Pattern;
+use Bencode\Integer;
+use Bencode\Byte;
+use Bencode\Exception\BListException;
 
 /**
  * The element list is a stream of encoded elements in a sequence.

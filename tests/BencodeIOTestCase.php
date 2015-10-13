@@ -1,10 +1,10 @@
 <?php
 
-use DSH\Bencode\Bencode;
-use DSH\Bencode\Integer;
-use DSH\Bencode\Byte;
-use DSH\Bencode\Collection\BList;
-use DSH\Bencode\Collection\Dictionary;
+use Bencode\Bencode;
+use Bencode\Integer;
+use Bencode\Byte;
+use Bencode\Collection\BList;
+use Bencode\Collection\Dictionary;
 
 class BencodeIOTestCase extends PHPUnit_Framework_TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-use DSH\Bencode\Integer;
+use Bencode\Integer;
 
 class IntegerTestCase extends PHPUnit_Framework_TestCase
 {
@@ -57,7 +57,7 @@ class IntegerTestCase extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \DSH\Bencode\Exception\IntegerException
+     * @expectedException \Bencode\Exception\IntegerException
      */
     public function testInvalidConstruction()
     {
@@ -83,7 +83,7 @@ class IntegerTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * @depends testBasicConstruction
-     * @expectedException \DSH\Bencode\Exception\IntegerException
+     * @expectedException \Bencode\Exception\IntegerException
      */
     public function testInvalidEncoding(Integer $int)
     {

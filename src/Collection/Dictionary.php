@@ -107,11 +107,6 @@ class Dictionary implements Element, Buffer, Json
             $key = new Integer();
         } else {
             return $stream;
-            /*
-            throw new DictionaryException(
-                'Improper dictionary key encoding: ' . $stream
-            );
-            */
         }
         
         // always read the key first, then onto the value
@@ -133,33 +128,10 @@ class Dictionary implements Element, Buffer, Json
         
         $stream = $value->decode($stream);
         
-        /* DEBUG
-        echo "\n\n";
-        
-        echo "Key: ";
-        var_dump($key->write());
-        
-        echo "Value: ";
-        var_dump($value->write());
-        
-        echo "\nStream: ";
-        var_dump($stream);
-        
-        echo "\nBuffer:";
-        
-        
-        echo "\n\n";
-        */
-        
         // assign the key and value.
         $this->_buffer[$key->write()] = $value->write();
         
-        //echo "Buffer: ";
-        //var_dump($this->_buffer);
-        //echo "\n\n";
-        
         if (strlen($stream) > 0) {
-            //echo "Stream: " . $stream . "\n\n";
             return $this->decode($stream);
         }
         
